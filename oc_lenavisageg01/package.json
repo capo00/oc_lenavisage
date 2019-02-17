@@ -1,0 +1,79 @@
+{
+  "name": "oc_lenavisageg01",
+  "version": "0.1.0-beta.3",
+  "description": "",
+  "license": "License Commercial",
+  "namespace": "LenaVisage",
+  "spec": "uu5-lib; uu_appg01@1.0.0",
+  "dependencies": {
+    "create-react-class": "15.6.3",
+    "prop-types": "15.6.1",
+    "react": "16.6.1",
+    "react-dom": "16.6.1",
+    "regenerator-runtime": "^0.13.1",
+    "uu5g04": "^1.0.0",
+    "uu_plus4u5g01": "^2.0.0"
+  },
+  "uuBuildSettings": {
+    "externals": {
+      "react": "React",
+      "react-dom": "ReactDOM",
+      "create-react-class": "createReactClass",
+      "prop-types": "PropTypes",
+      "uu5g04": {
+        "globalVariable": "UU5",
+        "uri": ""
+      },
+      "uu5g04-bricks": {
+        "globalVariable": "UU5.Bricks",
+        "uri": ""
+      },
+      "uu5g04-forms": {
+        "globalVariable": "UU5.Forms",
+        "uri": ""
+      },
+      "uu_plus4u5g01": {
+        "globalVariable": "Plus4U5",
+        "uri": ""
+      },
+      "uu_plus4u5g01-app": {
+        "globalVariable": "Plus4U5.App",
+        "uri": ""
+      },
+      "uu_plus4u5g01-bricks": {
+        "globalVariable": "Plus4U5.Bricks",
+        "uri": ""
+      }
+    }
+  },
+  "devDependencies": {
+    "uu_appg01_devkit": "^1.0.0"
+  },
+  "engines": {
+    "node": ">=8.9.0"
+  },
+  "scripts": {
+    "clean": "uu_appg01_devkit clean",
+    "test": "uu_appg01_devkit test",
+    "build": "uu_appg01_devkit build",
+    "package": "uu_appg01_devkit package",
+    "dist": "uu_appg01_devkit package",
+    "start": "uu_appg01_devkit start",
+    "prettify": "uu_appg01_devkit prettify",
+    "deploy": "uu_appg01_devkit deploy",
+    "uuAppBox": "uu_appg01_devkit uuAppBox",
+    "uuCloudDeploy": "uu_appg01_devkit uuCloudDeploy",
+    "uuCloudUndeploy": "uu_appg01_devkit uuCloudUndeploy",
+    "uuCloudDeployList": "uu_appg01_devkit uuCloudDeployList",
+    "generate": "uu_appg01_devkit generate"
+  },
+  "main": "dist-node/index.js",
+  "jsnext:main": "dist-esm/index.js",
+  "module": "dist-esm/index.js",
+  "files": [
+    "dist*"
+  ],
+  "prettier": {
+    "printWidth": 120
+  }
+}

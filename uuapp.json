@@ -1,0 +1,21 @@
+{
+  "product": "oc_lenavisageg01",
+  "version": "0.1.0-beta.3",
+  "license": "License Commercial",
+  "description": {
+    "en": "",
+    "cs": ""
+  },
+  "oc_lenavisageg01": {
+    "namespace": "LenaVisage",
+    "sourceUri": "https://cdn.plus4u.net/oc-lenavisageg01/%s/oc_lenavisageg01.min.js",
+    "docUri": "",
+    "imageUri": "",
+    "devkit": {
+      "development": {
+        "appBoxLocationUri": "ues:UU-BT:OC.LENAVISAGE/APPBOX",
+        "appDeploymentUri": "ues:DEV0116-BT[84723967990075193]:DEV[590ad6f527928911f9d6078d]:OC.LENAVISAGEG01[5c61ecdb4f1d8ab8dd8dca58]"
+      }
+    }
+  }
+}
