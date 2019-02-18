@@ -19,9 +19,9 @@ export const Eyelash = createReactClass({
 
   //@@viewOn:statics
   statics: {
-    tagName: Config.TAG + "Eyelash",
+    tagName: Config.TAG + "SocialEvent",
     classNames: {
-      main: Config.CSS + "eyelash"
+      main: Config.CSS + "socialevent"
     }
   },
   //@@viewOff:statics

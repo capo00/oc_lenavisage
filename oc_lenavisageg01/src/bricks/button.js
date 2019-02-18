@@ -31,6 +31,7 @@ export const Button = createReactClass({
         position: relative;
         margin: 4px;
         border-radius: 4px;
+        vertical-align: top;
       
         &.uu5-bricks-button-outline:focus:not(:hover) {
           background-color: unset !important;

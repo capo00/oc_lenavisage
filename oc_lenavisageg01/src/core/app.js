@@ -4,7 +4,7 @@ import createReactClass from "create-react-class";
 import * as UU5 from "uu5g04";
 import "uu5g04-bricks";
 import Config from "./config/config.js";
-import { Home, Archive, Services, Eyelash } from "../routes/routes.js";
+import { Home, Archive, Services, Eyelash, Wedding } from "../routes/routes.js";
 //@@viewOff:imports
 
 UU5.Environment.changeColorSchema("primary", "pink-rich");
@@ -53,6 +53,8 @@ export const App = createReactClass({
         return <Services onRoute={route => this.setState({ route })} />;
       case "eyelash":
         return <Eyelash onRoute={route => this.setState({ route })} />;
+      case "wedding":
+        return <Wedding onRoute={route => this.setState({ route })} />;
       case "archive":
         return <Archive onRoute={route => this.setState({ route })} />;
       default:

@@ -50,7 +50,10 @@ export const Home = createReactClass({
         header="Přehled"
       >
         <Button content="Vlasy" onClick={() => this.props.onRoute("services")} />
-        {/*<Button content="Řasy" onClick={() => this.props.onRoute("eyelash")} />*/}
+        <Button content="Řasy" onClick={() => this.props.onRoute("eyelash")} />
+        <Button content="Svatba" onClick={() => this.props.onRoute("wedding")} />
+        <br />
+        <br />
         <Button content="Archiv" onClick={() => this.props.onRoute("archive")} />
         <Button content="Zákazníci" onClick={() => this.props.onRoute("customers")} disabled />
       </UU5.Bricks.Section>

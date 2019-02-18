@@ -124,15 +124,13 @@ export const Confirmation = createReactClass({
   //@@viewOn:render
   render() {
     let summary = this.props.order.getSummary();
-    let hair = this.props.order.getHairName() || "";
-    if (hair) hair = ` - ${hair.toLowerCase()} vlasy`;
 
     return (
       <UU5.Bricks.Section
         {...this.getMainPropsToPass()}
         className="uu5-common-padding-xs"
         level={4}
-        header={[Tools.getBackButton(this.props.onRefuse), `${this.props.order.getCategoryName()}${hair}`]}
+        header={[Tools.getBackButton(this.props.onRefuse), this.props.order.getTitle()]}
       >
         <UU5.Forms.Text
           placeholder="Zákazník"
