@@ -49,7 +49,9 @@ export const App = createReactClass({
         type={1}
         top={<Plus4U5.App.Top content="Lena Visage" />}
       >
-        {this.isAuthenticated() ? <CoreApp /> : <Plus4U5.App.Login />}
+        {this.isAuthenticated()
+          ? <CoreApp />
+          : <Plus4U5.App.Login className={`color-schema-${UU5.Environment.getColorSchema("pink")} ` + UU5.Common.Css.css`background-color: #FCE4EC`} />}
       </Plus4U5.App.Page>
     )
   }

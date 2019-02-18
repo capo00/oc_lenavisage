@@ -11,6 +11,9 @@ const ICONS = {
   "woman": "mdi-human-female",
   "man": "mdi-human-male",
   "child": "mdi-human-child",
+  "eyelash": "mdi-eye-outline",
+  "socialEvent": "mdi-glass-wine",
+  "wedding": "mdi-heart-multiple-outline"
 };
 
 const MONTHS = ["Leden", "Únor", "Březen", "Duben", "Květen", "Červen", "Červenec", "Srpen", "Září", "Říjen", "Listopad", "Prosinec"];
@@ -81,6 +84,20 @@ export const OrderList = createReactClass({
     return items;
   },
 
+  _getIcon(order) {
+    let icon;
+    if (order.category) {
+      icon = ICONS[order.category];
+    } else if (order.eyelash) {
+      icon = ICONS.eyelash;
+    } else if (order.bride || order.guests) {
+      icon = ICONS.wedding;
+    } else if (order.socialEvents) {
+      icon = ICONS.socialEvent;
+    }
+    return icon;
+  },
+
   _renderOrders(items) {
     return items.map(order => (
       <UU5.Bricks.Button
@@ -96,7 +113,7 @@ export const OrderList = createReactClass({
           )
         })}
       >
-        <UU5.Bricks.Icon icon={ICONS[order.category]} /> {order.user} ({order.sum} Kč)
+        <UU5.Bricks.Icon icon={this._getIcon(order)} /> {order.user} ({order.sum} Kč)
       </UU5.Bricks.Button>
     ));
   },

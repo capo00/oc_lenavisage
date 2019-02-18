@@ -2,9 +2,9 @@
   "schemaVersion": "1.0.0",
   "schemaSpecificationUri": "https://uuos9.plus4u.net/uu-bookkitg01-main/78462435-289fcd2e11d34f3e9b2184bedb236ded/book/page?code=uuSubAppInstanceDescriptor",
   "uuSubApp": {
-    "code": "OC",
-    "version": "0.1.0-beta.4",
-    "name": "oc",
+    "code": "OC.LENAVISAGE",
+    "version": "0.1.0-beta.5",
+    "name": "oc_lenavisageg01",
     "description": "",
     "license": "License Commercial",
     "resourcePoolUri": "ues:DEV0116-BT:DEV",

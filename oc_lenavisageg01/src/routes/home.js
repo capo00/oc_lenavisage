@@ -51,6 +51,8 @@ export const Home = createReactClass({
       >
         <Button content="Vlasy" onClick={() => this.props.onRoute("services")} />
         <Button content="Řasy" onClick={() => this.props.onRoute("eyelash")} />
+        <br />
+        <Button content="Společenská akce" onClick={() => this.props.onRoute("socialEvent")} />
         <Button content="Svatba" onClick={() => this.props.onRoute("wedding")} />
         <br />
         <br />

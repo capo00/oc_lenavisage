@@ -8,11 +8,11 @@ import { Confirmation } from "../services/services.js";
 import Order from "../model/order.js";
 import Calls from "../calls.js";
 import { Button } from "../bricks/bricks.js";
-import { eyelash } from "../model/order.js"
+import { socialEvent } from "../model/order.js"
 import Tools from "../model/tools.js";
 //@@viewOff:imports
 
-export const Eyelash = createReactClass({
+export const SocialEvent = createReactClass({
   //@@viewOn:mixins
   mixins: [UU5.Common.BaseMixin],
   //@@viewOff:mixins
@@ -39,7 +39,8 @@ export const Eyelash = createReactClass({
 
     return {
       order,
-      state: null
+      state: null,
+      activeEvents: []
     };
   },
   //@@viewOff:reactLifeCycle
@@ -75,20 +76,34 @@ export const Eyelash = createReactClass({
           <UU5.Bricks.Section
             className="uu5-common-padding-xs"
             level={4}
-            header={[Tools.getBackButton(() => this.props.onRoute("home")), eyelash.name]}
+            header={[Tools.getBackButton(() => this.props.onRoute("home")), socialEvent.name]}
           >
-            {Object.keys(eyelash.type).map(key => {
+            {Object.keys(socialEvent.type).map(key => {
               return (
                 <Button
                   key={key}
-                  content={eyelash.type[key].name}
+                  content={socialEvent.type[key].name}
+                  active={this.state.activeEvents.indexOf(key) > -1}
                   onClick={() => {
-                    this.state.order.setEyelash(key);
-                    this.setState({ state: "confirmation" });
+                    this.state.order.toggleSocialEvent(key);
+                    this.setState({ activeEvents: this.state.order.getSocialEvents() });
                   }}
                 />
               )
             })}
+
+            {this.state.activeEvents.length ? (
+              <div className={UU5.Common.Css.css`padding: 4px`}>
+                <UU5.Bricks.Button
+                  onClick={() => this.setState({ state: "confirmation" })}
+                  size="xl"
+                  displayBlock
+                  colorSchema="primary"
+                >
+                  Souhrn
+                </UU5.Bricks.Button>
+              </div>
+            ) : null}
           </UU5.Bricks.Section>
         );
     }
@@ -106,4 +121,4 @@ export const Eyelash = createReactClass({
   //@@viewOff:render
 });
 
-export default Eyelash;
+export default SocialEvent;

@@ -5,3 +5,5 @@ export default { App };
 
 console.log(`${process.env.NAME}-${process.env.VERSION} © Unicorn\nTerms of Use: https://unicorn.com/tou/${process.env.NAME}`);
 UU5.Environment.addRuntimeLibrary({ name: process.env.NAME, version: process.env.VERSION });
+
+UU5.Environment.addIconLibrary("mdi", "//cdn.materialdesignicons.com/3.4.93/css/materialdesignicons.min.css");

@@ -166,14 +166,18 @@ export const eyelash = {
   }
 };
 
-export const makeUp = {
-  name: "Líčení",
-  price: 600
-};
-
-export const hairStyle = {
-  name: "Účes",
-  price: 600
+export const socialEvent = {
+  name: "Společenská akce",
+  type: {
+    hairstyle: {
+      name: "Účes",
+      price: 600
+    },
+    makeup: {
+      name: "Líčení",
+      price: 600
+    }
+  }
 };
 
 export const NAMES = {
@@ -237,6 +241,7 @@ class Order {
     this.hair = null;
     this.eyelash = null;
     this.services = [];
+    this.socialEvents = [];
   }
 
   setCategory(category) {
@@ -320,11 +325,19 @@ class Order {
         })
       });
 
-      Object.keys(guests).map(key => services.push({
+      Object.keys(guests).forEach(key => services.push({
         key: `guest-${key}`,
         name: `${wedding.category.guest.name} - ${wedding.category.guest.type[key].name.toLowerCase()} (${guests[key]}x)`,
         price: wedding.category.guest.type[key].price * guests[key]
-      }))
+      }));
+    }
+
+    if (this.socialEvents.length) {
+      this.socialEvents.forEach(key => services.push({
+        key: `socialEvent-${key}`,
+        name: socialEvent.type[key].name,
+        price: socialEvent.type[key].price
+      }));
     }
 
     return services;
@@ -398,6 +411,14 @@ class Order {
       if (Object.keys(guests).length) data.guests = guests;
     }
 
+    if (this.socialEvents.length) {
+      data.socialEvents = this.socialEvents.map(key => {
+        let price = socialEvent.type[key].price;
+        sum += price;
+        return { code: key, sum: price };
+      })
+    }
+
     data.sum = sum;
 
     return data;
@@ -410,9 +431,11 @@ class Order {
       title = this.getCategoryName();
       if (this.getHairName()) title += ` - ${this.getHairName().toLowerCase()} vlasy`;
     } else if (this.getEyelash()) {
-      title = "Řasy - " + this.getEyelashName();
+      title = `${eyelash.name} - ${this.getEyelashName()}`;
     } else if (this.brideType || this.guests) {
-      title = "Svatba";
+      title = wedding.name;
+    } else if (this.socialEvents.length) {
+      title = socialEvent.name;
     }
 
     return title;
@@ -451,6 +474,20 @@ class Order {
 
   getGuests() {
     return this.guests;
+  }
+
+  toggleSocialEvent(key) {
+    let index = this.socialEvents.indexOf(key);
+    if (index > -1) {
+      this.socialEvents.splice(index, 1);
+    } else {
+      this.socialEvents.push(key);
+    }
+    return this;
+  }
+
+  getSocialEvents() {
+    return this.socialEvents;
   }
 }
 
