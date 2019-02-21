@@ -105,7 +105,7 @@ export const OrderList = createReactClass({
         bgStyle="transparent"
         displayBlock
         onClick={() => this._modal.open({
-          header: order.user || "Customer",
+          header: (order.customer && order.customer.name) || "Customer",
           content: (
             <pre>
               {JSON.stringify(order, null, 2)}
@@ -113,7 +113,7 @@ export const OrderList = createReactClass({
           )
         })}
       >
-        <UU5.Bricks.Icon icon={this._getIcon(order)} /> {order.user} ({order.sum} Kč)
+        <UU5.Bricks.Icon icon={this._getIcon(order)} /> {order.customer ? order.customer.name : ""} ({order.sum} Kč)
       </UU5.Bricks.Button>
     ));
   },

@@ -1,6 +1,7 @@
 import regeneratorRuntime from "regenerator-runtime";
 import * as Plus4U5 from "uu_plus4u5g01";
 import Binary from "./binary.js";
+import cache from "../cache.js";
 
 export class Attachment {
 
@@ -41,12 +42,20 @@ export class Attachment {
   }
 
   static async getData(uri) {
-    let binary = await this.getBinary(uri);
-    return binary.toData();
+    let data;
+    if (cache.isCached(uri)) {
+      data = cache.get(uri);
+    } else {
+      let binary = await this.getBinary(uri);
+      data = binary.toData();
+      cache.set(uri, data);
+    }
+    return data;
   }
 
   static async setData(uri, data, fileName) {
     await this.setBinary(uri, new Binary(JSON.stringify(data), fileName));
+    cache.set(uri, data);
   }
 
   static async updateData(uri, updateFn) {

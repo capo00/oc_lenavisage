@@ -7,6 +7,7 @@ import "uu5g04-forms";
 import Config from "../config/config.js";
 import PropTypes from "prop-types";
 import Tools from "../model/tools.js";
+import CustomerInput from "./customer-input.js";
 //@@viewOff:imports
 
 const rowClassName = UU5.Common.Css.css`
@@ -109,15 +110,17 @@ export const Confirmation = createReactClass({
   },
 
   _confirm(order) {
-    let user = this._user.getValue();
-    let desc = this._desc.getValue();
+    if (this._customer.isValid()) {
+      let customer = this._customer.getValue();
+      let desc = this._desc.getValue();
 
-    let result = { ...order };
+      let result = { ...order };
 
-    if (user) result.user = user;
-    if (desc) result.desc = desc;
+      if (customer) result.customer = customer;
+      if (desc) result.desc = desc;
 
-    this.props.onConfirm(result);
+      this.props.onConfirm(result);
+    }
   },
   //@@viewOff:private
 
@@ -132,10 +135,9 @@ export const Confirmation = createReactClass({
         level={4}
         header={[Tools.getBackButton(this.props.onRefuse), this.props.order.getTitle()]}
       >
-        <UU5.Forms.Text
-          placeholder="Zákazník"
-          ref_={user => this._user = user}
-          className={UU5.Common.Css.css`margin-bottom: 8px`}
+        <CustomerInput
+          ref_={customer => this._customer = customer}
+          className={UU5.Common.Css.css`margin-bottom: 24px`}
         />
         {this._getServices(summary.sum)}
         <UU5.Forms.TextArea placeholder="Poznámka" ref_={area => this._desc = area} />

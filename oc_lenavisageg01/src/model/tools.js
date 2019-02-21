@@ -4,7 +4,7 @@ import { Button } from "../bricks/bricks.js";
 
 const Tools = {
   mt: {
-    "7-7948-1": "MT.CAPEK.ONDREJ.2",
+    "7-7948-1": "98234766872277175",
     "23-6204-1": "98234766872277175"
   },
 
