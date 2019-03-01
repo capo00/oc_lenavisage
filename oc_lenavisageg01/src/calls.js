@@ -6,11 +6,13 @@ import * as Dao from "./model/dao/dao.js";
 
 let Calls = {
   async saveOrder(data) {
-    if (data.customer.id) {
-      data.customer = data.customer.id;
-    } else {
-      let userData = await Dao.Customer.create(data.customer);
-      data.customer = userData.id;
+    if (data.customer) {
+      if (data.customer.id) {
+        data.customer = data.customer.id;
+      } else {
+        let userData = await Dao.Customer.create(data.customer);
+        data.customer = userData.id;
+      }
     }
 
     await Dao.Order.create(data);
