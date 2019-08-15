@@ -82,7 +82,7 @@ export const SocialEvent = createReactClass({
               return (
                 <Button
                   key={key}
-                  content={socialEvent.type[key].name}
+                  children={socialEvent.type[key].name}
                   active={this.state.activeEvents.indexOf(key) > -1}
                   onClick={() => {
                     this.state.order.toggleSocialEvent(key);

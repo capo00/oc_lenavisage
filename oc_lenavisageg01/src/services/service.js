@@ -63,7 +63,7 @@ export const Service = createReactClass({
         let activeService = this.props.activeServices.find(service => service.key === key);
         let props = {
           key,
-          content: service.name,
+          children: service.name,
           active: !!activeService,
           onClick: () => this.props.onClick(key, isQuantity)
         };

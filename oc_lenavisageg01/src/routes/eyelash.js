@@ -81,7 +81,7 @@ export const Eyelash = createReactClass({
               return (
                 <Button
                   key={key}
-                  content={eyelash.type[key].name}
+                  children={eyelash.type[key].name}
                   onClick={() => {
                     this.state.order.setEyelash(key);
                     this.setState({ state: "confirmation" });

@@ -49,15 +49,15 @@ export const Home = createReactClass({
         level={4}
         header="Přehled"
       >
-        <Button content="Vlasy" onClick={() => this.props.onRoute("services")} />
-        <Button content="Řasy" onClick={() => this.props.onRoute("eyelash")} />
+        <Button children="Vlasy" onClick={() => this.props.onRoute("services")} />
+        <Button children="Řasy" onClick={() => this.props.onRoute("eyelash")} />
         <br />
-        <Button content="Společenská akce" onClick={() => this.props.onRoute("socialEvent")} />
-        <Button content="Svatba" onClick={() => this.props.onRoute("wedding")} />
+        <Button children="Společenská akce" onClick={() => this.props.onRoute("socialEvent")} />
+        <Button children="Svatba" onClick={() => this.props.onRoute("wedding")} />
         <br />
         <br />
-        <Button content="Archiv" onClick={() => this.props.onRoute("archive")} />
-        <Button content="Zákazníci" onClick={() => this.props.onRoute("customers")} disabled />
+        <Button children="Archiv" onClick={() => this.props.onRoute("archive")} />
+        <Button children="Zákazníci" onClick={() => this.props.onRoute("customers")} disabled />
       </UU5.Bricks.Section>
     );
   }

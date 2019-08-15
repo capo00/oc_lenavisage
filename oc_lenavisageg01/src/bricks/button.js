@@ -11,9 +11,7 @@ export const Button = createReactClass({
   //@@viewOn:mixins
   mixins: [
     UU5.Common.BaseMixin,
-    UU5.Common.ElementaryMixin,
-    UU5.Common.ColorSchemaMixin,
-    UU5.Common.ContentMixin
+    UU5.Common.ElementaryMixin
   ],
   //@@viewOff:mixins
 
@@ -21,7 +19,7 @@ export const Button = createReactClass({
   statics: {
     tagName: Config.TAG + "Button",
     classNames: {
-      main: UU5.Common.Css.css`
+      main: () => UU5.Common.Css.css`
         width: 96px;
         max-width: 100%;
         height: 96px;
@@ -37,12 +35,12 @@ export const Button = createReactClass({
           background-color: unset !important;
         }
       `,
-      info: UU5.Common.Css.css`
+      info: () => UU5.Common.Css.css`
         position: absolute;
         top: -2px;
         right: -2px;
         font-size: 1.5em;
-      `
+      ` + " uu5-elevation-1"
     }
   },
   //@@viewOff:statics
@@ -83,17 +81,22 @@ export const Button = createReactClass({
   render() {
     return (
       <UU5.Bricks.Button
-    {...this.getMainPropsToPass()}
-    content={null}
-    onClick={this.props.onClick}
-    bgStyle={this.props.active ? "filled" : "outline"}
-    pressed={this.props.active}
-    colorSchema="primary"
+        {...this.getMainPropsToPass()}
+        onClick={this.props.onClick}
+        bgStyle={this.props.active ? "filled" : "outline"}
+        pressed={this.props.active}
+        colorSchema="primary"
       >
-      {this.props.info && <UU5.Bricks.Badge colorSchema="white" className={this.getClassName("info") + " uu5-elevation-1"} content={this.props.info} />}
-    {this.props.icon && <UU5.Bricks.Icon icon={this.props.icon} />}
-      {this.getChildren()}
-    </UU5.Bricks.Button>
+        {this.props.info && (
+          <UU5.Bricks.Badge
+            colorSchema="white"
+            className={this.getClassName("info")}
+            content={this.props.info}
+          />
+        )}
+        {this.props.icon && <UU5.Bricks.Icon icon={this.props.icon} />}
+        {this.props.children}
+      </UU5.Bricks.Button>
     );
   }
   //@@viewOff:render

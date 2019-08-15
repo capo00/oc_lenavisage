@@ -3,25 +3,11 @@ import * as UU5 from "uu5g04";
 import { Button } from "../bricks/bricks.js";
 
 const Tools = {
-  mt: {
-    "7-7948-1": "98234766872277175",
-    "23-6204-1": "98234766872277175"
-  },
-
+  mtCode: process.env.NODE_ENV === "production" ? "98234766872277175" : "MT.CAPEK.ONDREJ.2",
   artCode: "LENA_VISAGE",
 
   getDaoArtUri() {
-    return ["ues", Tools.getMTCode(), Tools.artCode].join(":");
-  },
-
-  getMTCode() {
-    let session = UU5.Environment.getSession();
-    if (session) {
-      let uid = session.getIdentity().uuIdentity;
-      return Tools.mt[uid];
-    } else {
-      throw "User is not logged in.";
-    }
+    return ["ues", Tools.mtCode, Tools.artCode].join(":");
   },
 
   getBackButton: onClick => (
@@ -34,7 +20,7 @@ const Tools = {
     let buttons = [];
     for (let key in items) {
       buttons.push(
-        <Button key={key} content={items[key]} onClick={() => onClick(key)} />
+        <Button key={key} children={items[key]} onClick={() => onClick(key)} />
       );
     }
     return buttons;
