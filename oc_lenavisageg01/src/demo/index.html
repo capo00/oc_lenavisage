@@ -29,13 +29,13 @@
       }
     });
 
-    var UU5 = {
-      Environment: {
-        uu_app_oidc_redirect_uri: "/callbacks/oidc-callback.html",
-        uu_app_oidc_primary_provider: "oidcg02",
-        uu_app_oidc_providers_oidcg02_uri: "https://uuidentity.plus4u.net/uu-oidc-maing02/bb977a99f4cc4c37a2afce3fd599d0a7/oidc"
-      }
-    };
+    // var UU5 = {
+    //   Environment: {
+    //     uu_app_oidc_redirect_uri: "callbacks/oidc-callback.html",
+    //     uu_app_oidc_primary_provider: "oidcg02",
+    //     uu_app_oidc_providers_oidcg02_uri: "https://uuidentity.plus4u.net/uu-oidc-maing02/bb977a99f4cc4c37a2afce3fd599d0a7/oidc"
+    //   }
+    // };
   </script>
 </head>
 <body>
@@ -49,6 +49,8 @@
   import React from "react";
   import ReactDOM from "react-dom";
   import LenaVisage from "oc_lenavisageg01";
+
+  UU5.Environment.disableStatistics();
 
   ReactDOM.render(<LenaVisage.App />, document.getElementById('renderHere'));
 </script>

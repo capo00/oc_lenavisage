@@ -75,6 +75,30 @@ const Services = {
         price: 40
       }
     },
+    duoMelodies: {
+      name: "Duo - Melíry",
+      price: {
+        short: 260,
+        middle: 300,
+        long: 350
+      },
+      unit: {
+        volume: 30,
+        price: 60
+      }
+    },
+    duoColor: {
+      name: "Duo - Barva",
+      price: {
+        short: 0,
+        middle: 0,
+        long: 0
+      },
+      unit: {
+        volume: 15,
+        price: 40
+      }
+    },
     bondUltim: {
       name: "Bond Ultim",
       unit: {
