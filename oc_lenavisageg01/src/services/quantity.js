@@ -58,7 +58,7 @@ export const Quantity = createReactClass({
         level={4}
         header={[Tools.getBackButton(this.props.onBack), ` Počet odměrek (${this.props.service.unit}ml)`]}
       >
-        {[0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5].map(unit => (
+        {[0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5, 5.5, 6, 6.5, 7, 7.5, 8].map(unit => (
           <Button key={unit} children={(unit + "").replace(".", ",")} onClick={() => this.props.onClick(unit)} />
         ))}
       </UU5.Bricks.Section>
