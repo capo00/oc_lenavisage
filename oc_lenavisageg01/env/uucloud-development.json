@@ -3,7 +3,7 @@
   "schemaSpecificationUri": "https://uuos9.plus4u.net/uu-bookkitg01-main/78462435-289fcd2e11d34f3e9b2184bedb236ded/book/page?code=uuSubAppInstanceDescriptor",
   "uuSubApp": {
     "code": "OC",
-    "version": "0.3.0-beta.2",
+    "version": "0.4.0-beta.2",
     "name": "oc",
     "description": "",
     "license": "License Commercial",
@@ -11,7 +11,7 @@
     "targetSlot": "BETA",
     "uuAppCdnMap": {
       "CDN": {
-        "appPackUri": "ues:UU-BT:OC.LENAVISAGEG01/APPBOX-0.3.0-beta:OC.LENAVISAGEG01/CDN-PACK"
+        "appPackUri": "ues:UU-BT:OC.LENAVISAGEG01/APPBOX-0.4.0-beta:OC.LENAVISAGEG01/CDN-PACK"
       }
     }
   }

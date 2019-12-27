@@ -36,11 +36,26 @@ export class Schema {
     return data;
   }
 
+  static async update(id, object) {
+    let uri = this.getUri();
+    let data;
+
+    await UuOs8.Attachment.updateData(uri, value => {
+      const i = value.findIndex(item => item.id === id);
+      value[i] = { ...value[i], ...object };
+      data = value[i];
+      return value;
+    });
+
+    return data;
+  }
+
   static async list() {
     let uri = this.getUri();
 
     try {
-      return await UuOs8.Attachment.getData(uri);
+      const data = await UuOs8.Attachment.getData(uri);
+      return data;
     } catch (error) {
       if (error.data && error.data.exceptionClass === "cz.ues.platform.commons.entity.MainEntityDoesNotExistRTException" && error.data.code === "UU.OS/E05207.M00") {
         return [];

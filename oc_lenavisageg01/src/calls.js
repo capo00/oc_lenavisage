@@ -15,19 +15,26 @@ let Calls = {
       }
     }
 
-    await Dao.Order.create(data);
+    if (data.id) {
+      return await Dao.Order.update(data.id, data);
+    } else {
+      return await Dao.Order.create(data);
+    }
   },
 
   async listOrders(dtoIn) {
     // let data = await Dao.Order.list();
-    Promise.all([Dao.Order.list(), Dao.Customer.list()]).then(([orders, customers]) => {
-      let customersMap = {};
-      customers.forEach(c => customersMap[c.id] = c);
-      let data = orders.map(o => {
-        if (o.customer) o.customer = customersMap[o.customer] || { id: o.customer };
-        return o;
+    return new Promise(resolve => {
+      Promise.all([Dao.Order.list(), Dao.Customer.list()]).then(([orders, customers]) => {
+        let customersMap = {};
+        customers.forEach(c => customersMap[c.id] = c);
+        let data = orders.map(o => {
+          o = { ...o };
+          if (o.customer) o.customer = customersMap[o.customer] || { id: o.customer };
+          return o;
+        });
+        dtoIn ? dtoIn.done(data) : resolve({ itemList: data });
       });
-      dtoIn.done(data);
     });
   },
 

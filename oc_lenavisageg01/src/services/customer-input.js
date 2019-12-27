@@ -38,7 +38,7 @@ export const CustomerInput = createReactClass({
   //@@viewOn:reactLifeCycle
   getInitialState() {
     return {
-      select: true
+      select: !this.props.value || !!this.props.value.id
     };
   },
 
@@ -93,18 +93,27 @@ export const CustomerInput = createReactClass({
       <div {...attrs} className={`${className} ${UU5.Common.Css.css`display: flex; align-items: baseline`}`}>
         {this.state.select && (
           <UU5.Forms.Select
+            value={this.props.value ? this.props.value.id : undefined}
+            required={this.props.required}
             placeholder="Zákazník"
             ref_={select => {
               this._select = select;
               this._text = undefined;
             }}
             style="width: calc(100% - 32px);display: inline-block"
+            onChange={opt => {
+              let v = this.state.dtoOut.find(c => c.id === opt.value);
+              this.props.onChange && this.props.onChange(v);
+              opt.component.onChangeDefault(opt);
+            }}
           >
             {this.isReady() ? this._getOptions() : undefined}
           </UU5.Forms.Select>
         )}
         {!this.state.select && (
           <UU5.Forms.Text
+            value={this.props.value ? this.props.value.name : undefined}
+            required={this.props.required}
             placeholder="Zákazník"
             ref_={text => {
               this._text = text;
@@ -114,6 +123,8 @@ export const CustomerInput = createReactClass({
             onBlur={({ value, component }) => {
               if (!this.isValid(value)) {
                 component.setError("Zákazník s tímto jménem již existuje.", value);
+              } else {
+                this.props.onChange && this.props.onChange({ name: value });
               }
             }}
           />

@@ -18,6 +18,25 @@ const ICONS = {
 
 const MONTHS = ["Leden", "Únor", "Březen", "Duben", "Květen", "Červen", "Červenec", "Srpen", "Září", "Říjen", "Listopad", "Prosinec"];
 
+function addOrder(items, date, order, sum) {
+  let year = date.getFullYear();
+  items[year] = items[year] || { items: {}, sum: 0 };
+  items[year].sum += sum;
+
+  let month = date.getMonth() + 1;
+  items[year].items[month] = items[year].items[month] || { items: {}, sum: 0 };
+  items[year].items[month].sum += sum;
+
+  // let week = UU5.Common.Tools.getWeekNumber(date);
+  let day = date.getDate();
+  items[year].items[month].items[day] = items[year].items[month].items[day] || { items: [], sum: 0 };
+  items[year].items[month].items[day].sum += sum;
+
+  order = { ...order };
+  order.actualSum = sum;
+  items[year].items[month].items[day].items.push(order);
+}
+
 export const OrderList = createReactClass({
   //@@viewOn:mixins
   mixins: [
@@ -33,7 +52,7 @@ export const OrderList = createReactClass({
     tagName: Config.TAG + "OrderList",
     classNames: {
       main: UU5.Common.Css.css`
-        
+
       `
     }
   },
@@ -63,22 +82,12 @@ export const OrderList = createReactClass({
     let items = {};
 
     this.props.items.forEach(order => {
-      let date = new Date(order.date);
-      order.date = date;
+      let depositDate = order.depositDate ? new Date(order.depositDate) : undefined;
+      let payDate = order.payDate ? new Date(order.payDate) : new Date(order.date);
+      order.payDate = payDate;
 
-      let year = date.getFullYear();
-      items[year] = items[year] || { items: {}, sum: 0 };
-      items[year].sum += order.sum;
-
-      let month = date.getMonth() + 1;
-      items[year].items[month] = items[year].items[month] || { items: {}, sum: 0 };
-      items[year].items[month].sum += order.sum;
-
-      // let week = UU5.Common.Tools.getWeekNumber(date);
-      let day = date.getDate();
-      items[year].items[month].items[day] = items[year].items[month].items[day] || { items: [], sum: 0 };
-      items[year].items[month].items[day].sum += order.sum;
-      items[year].items[month].items[day].items.push(order);
+      order.deposit && addOrder(items, depositDate, order, order.deposit);
+      addOrder(items, payDate, order, order.sum - (order.deposit || 0));
     });
 
     return items;
@@ -99,9 +108,9 @@ export const OrderList = createReactClass({
   },
 
   _renderOrders(items) {
-    return items.map(order => (
+    return items.map((order, i) => (
       <UU5.Bricks.Button
-        key={order.id}
+        key={order.id + "-" + i}
         bgStyle="transparent"
         displayBlock
         onClick={() => this._modal.open({
@@ -113,7 +122,7 @@ export const OrderList = createReactClass({
           )
         })}
       >
-        <UU5.Bricks.Icon icon={this._getIcon(order)} /> {order.customer ? order.customer.name : ""} ({order.sum} Kč)
+        <UU5.Bricks.Icon icon={this._getIcon(order)} /> {order.customer ? order.customer.name : ""} ({order.actualSum} Kč)
       </UU5.Bricks.Button>
     ));
   },

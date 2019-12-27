@@ -13,11 +13,11 @@ import CustomerInput from "./customer-input.js";
 const rowClassName = UU5.Common.Css.css`
   & > div {
     display: inline-block;
-    
+
     &:first-child {
       width: calc(100% - 100px);
     }
-    
+
     &:last-child {
       width: 100px;
       text-align: right;
@@ -46,6 +46,39 @@ const Row = ({ label, price, bold, level = 1 }) => {
     </div>
   );
 };
+
+function getServices(order, sum) {
+  let items = order.listServices().map(service => (
+    <div key={service.key}>
+      <Row label={service.name} price={service.price} />
+      {service.quantity && (
+        <Row level={2} label={`${service.quantity}x ${service.unit}ml`}
+             price={service.quantity * service.unitPrice} />
+      )}
+    </div>
+  ));
+
+  const deposit = order.getDeposit();
+  if (deposit) {
+    items.push(
+      <div key="deposit">
+        <Row label="Zaplaceno" price={-1 * deposit} />
+      </div>
+    );
+  }
+
+  items.push(
+    <div key="result">
+      <Row label="CELKEM" price={sum - deposit} bold />
+    </div>
+  );
+
+  return (
+    <div>
+      {items}
+    </div>
+  )
+}
 
 export const Confirmation = createReactClass({
   //@@viewOn:mixins
@@ -85,30 +118,6 @@ export const Confirmation = createReactClass({
   //@@viewOff:overriding
 
   //@@viewOn:private
-  _getServices(sum) {
-    let items = this.props.order.listServices().map(service => (
-      <div key={service.key}>
-        <Row label={service.name} price={service.price} />
-        {service.quantity && (
-          <Row level={2} label={`${service.quantity}x ${service.unit}ml`}
-               price={service.quantity * service.unitPrice} />
-        )}
-      </div>
-    ));
-
-    items.push(
-      <div key="result">
-        <Row label="CELKEM" price={sum} bold />
-      </div>
-    );
-
-    return (
-      <div>
-        {items}
-      </div>
-    )
-  },
-
   _confirm(order) {
     if (this._customer.isValid()) {
       let customer = this._customer.getValue();
@@ -139,7 +148,7 @@ export const Confirmation = createReactClass({
           ref_={customer => this._customer = customer}
           className={UU5.Common.Css.css`margin-bottom: 24px`}
         />
-        {this._getServices(summary.sum)}
+        {getServices(this.props.order, summary.sum)}
         <UU5.Forms.TextArea placeholder="Poznámka" ref_={area => this._desc = area} />
         <UU5.Bricks.Button
           className={UU5.Common.Css.css`margin-top: 8px`}
@@ -154,5 +163,7 @@ export const Confirmation = createReactClass({
   }
   //@@viewOff:render
 });
+
+Confirmation.getServices = getServices;
 
 export default Confirmation;

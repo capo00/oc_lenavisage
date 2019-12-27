@@ -19,10 +19,10 @@ export const Button = createReactClass({
   statics: {
     tagName: Config.TAG + "Button",
     classNames: {
-      main: () => UU5.Common.Css.css`
-        width: 96px;
+      main: ({size}) => UU5.Common.Css.css`
+        width: ${size === "s" ? 48 : 96}px;
         max-width: 100%;
-        height: 96px;
+        height: ${size === "s" ? 48 : 96}px;
         display: inline-flex;
         justify-content: center;
         align-items: center;
@@ -30,7 +30,7 @@ export const Button = createReactClass({
         margin: 4px;
         border-radius: 4px;
         vertical-align: top;
-      
+
         &.uu5-bricks-button-outline:focus:not(:hover) {
           background-color: unset !important;
         }

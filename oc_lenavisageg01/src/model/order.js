@@ -125,6 +125,7 @@ const Services = {
 * */
 export const wedding = {
   name: "Svatba",
+  date: "Datum",
   category: {
     bride: {
       name: "Nevěsta",
@@ -260,12 +261,31 @@ export class Service {
 }
 
 class Order {
-  constructor() {
+  constructor(data = {}) {
     this.category = null;
     this.hair = null;
     this.eyelash = null;
     this.services = [];
     this.socialEvents = [];
+
+    this.customer = data.customer;
+
+    // wedding
+    this.weddingDate = data.weddingDate ? new Date(data.weddingDate) : undefined;
+    this.annotation = data.desc;
+    this.id = data.id;
+    this.deposit = data.deposit || 0;
+    this.brideType = data.bride ? data.bride.code : undefined;
+
+    if (data.guests) {
+      this.guests = data.guests.map(guest => {
+        const newGuest = {};
+        for (let k in guest) {
+          newGuest[k] = true;
+        }
+        return newGuest;
+      });
+    }
   }
 
   setCategory(category) {
@@ -440,12 +460,30 @@ class Order {
         let price = socialEvent.type[key].price;
         sum += price;
         return { code: key, sum: price };
-      })
+      });
     }
 
     data.sum = sum;
 
+    if (this.weddingDate) data.weddingDate = this.weddingDate.toISOString();
+    if (this.annotation) data.desc = this.annotation;
+    if (this.customer) data.customer = this.customer;
+    if (this.deposit) data.deposit = this.deposit;
+    if (this.id) data.id = this.id;
+
     return data;
+  }
+
+  setId(id) {
+    this.id = id;
+  }
+
+  setAnnotation(annotation) {
+    this.annotation = annotation;
+  }
+
+  getAnnotation() {
+    return this.annotation;
   }
 
   getTitle() {
@@ -512,6 +550,30 @@ class Order {
 
   getSocialEvents() {
     return this.socialEvents;
+  }
+
+  setWeddingDate(weddingDate) {
+    this.weddingDate = weddingDate;
+  }
+
+  getWeddingDate() {
+    return this.weddingDate;
+  }
+
+  setCustomer(customer) {
+    this.customer = customer;
+  }
+
+  getCustomer() {
+    return this.customer;
+  }
+
+  setDeposit(deposit) {
+    this.deposit = deposit;
+  }
+
+  getDeposit() {
+    return this.deposit;
   }
 }
 
