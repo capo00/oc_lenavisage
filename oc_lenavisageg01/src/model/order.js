@@ -2,7 +2,7 @@ const Services = {
   man: {
     cut: {
       name: "Střih",
-      price: 100
+      price: 150
     },
     care: {
       name: "Péče",
@@ -13,7 +13,7 @@ const Services = {
     cut: {
       name: "Střih",
       price: {
-        short: 60,
+        short: 100,
         long: 100
       }
     },
@@ -26,25 +26,25 @@ const Services = {
     cut: {
       name: "Střih",
       price: {
-        short: 200,
-        middle: 200,
-        long: 200
+        short: 230,
+        middle: 230,
+        long: 230
       }
     },
     care: {
       name: "Péče",
       price: {
-        short: 150,
-        middle: 200,
-        long: 250
+        short: 170,
+        middle: 230,
+        long: 290
       }
     },
     melodies: {
       name: "Melíry",
       price: {
-        short: 200,
-        middle: 270,
-        long: 400
+        short: 230,
+        middle: 310,
+        long: 460
       },
       unit: {
         volume: 30,
@@ -54,9 +54,9 @@ const Services = {
     hairSpray: {
       name: "Přeliv",
       price: {
-        short: 200,
-        middle: 230,
-        long: 250
+        short: 230,
+        middle: 270,
+        long: 290
       },
       unit: {
         volume: 15,
@@ -66,9 +66,9 @@ const Services = {
     color: {
       name: "Barva",
       price: {
-        short: 200,
-        middle: 230,
-        long: 250
+        short: 230,
+        middle: 270,
+        long: 290
       },
       unit: {
         volume: 15,
@@ -78,9 +78,9 @@ const Services = {
     duoMelodies: {
       name: "Duo - Melíry",
       price: {
-        short: 260,
-        middle: 300,
-        long: 350
+        short: 300,
+        middle: 350,
+        long: 400
       },
       unit: {
         volume: 30,
@@ -133,6 +133,10 @@ export const wedding = {
         package: {
           name: "Balíček",
           price: 3200
+        },
+        hairstyleMakeup: {
+          name: "Účes + líčení",
+          price: 2400
         },
         hairstyle: {
           name: "Účes",
@@ -196,11 +200,11 @@ export const socialEvent = {
   type: {
     hairstyle: {
       name: "Účes",
-      price: 600
+      price: 900
     },
     makeup: {
       name: "Líčení",
-      price: 600
+      price: 800
     }
   }
 };
