@@ -82,12 +82,16 @@ export const OrderList = createReactClass({
     let items = {};
 
     this.props.items.forEach(order => {
-      let depositDate = order.depositDate ? new Date(order.depositDate) : undefined;
-      let payDate = order.payDate ? new Date(order.payDate) : new Date(order.date);
-      order.payDate = payDate;
+      // wedding - deposit
+      if (order.depositDate) {
+        const depositDate = new Date(order.depositDate);
+        addOrder(items, depositDate, order, order.deposit);
+      }
 
-      order.deposit && addOrder(items, depositDate, order, order.deposit);
-      addOrder(items, payDate, order, order.sum - (order.deposit || 0));
+      if (!order.weddingDate || order.payDate) {
+        const payDate = order.payDate ? new Date(order.payDate) : new Date(order.date);
+        addOrder(items, payDate, order, order.sum - (order.deposit || 0));
+      }
     });
 
     return items;
