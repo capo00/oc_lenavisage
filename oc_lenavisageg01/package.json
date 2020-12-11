@@ -1,13 +1,13 @@
 {
   "name": "oc_lenavisageg01",
-  "version": "0.4.2-beta.1",
+  "version": "0.4.2-beta.2",
   "description": "",
   "license": "License Commercial",
   "namespace": "LenaVisage",
   "spec": "uu5-lib; uu_appg01@1.3.0",
   "dependencies": {
     "uu5g04": "^1.0.0",
-    "uu_plus4u5g01": "^3.0.0"
+    "uu_plus4u5g01": "^4.0.0"
   },
   "uuBuildSettings": {
     "externals": {}

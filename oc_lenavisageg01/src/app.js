@@ -8,7 +8,7 @@ import Config from "./config/config.js";
 import CoreApp from "./core/app.js";
 //@@viewOff:imports
 
-export const App = createReactClass({
+const App1 = createReactClass({
   //@@viewOn:mixins
   mixins: [UU5.Common.BaseMixin, UU5.Common.IdentityMixin],
   //@@viewOff:mixins
@@ -58,4 +58,7 @@ export const App = createReactClass({
   //@@viewOff:render
 });
 
-export default App;
+// export default App;
+
+export const App = CoreApp;
+export default CoreApp;
