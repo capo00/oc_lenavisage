@@ -32,7 +32,6 @@ export const Services = createReactClass({
   //@@viewOn:reactLifeCycle
   getInitialState() {
     let order = new Order();
-    window.OcOrder = order;
 
     return {
       order,

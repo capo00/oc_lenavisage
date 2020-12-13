@@ -53,7 +53,7 @@ export const App = createReactClass({
           ? <CoreApp />
           : <Plus4U5.App.Login className={`color-schema-${UU5.Environment.getColorSchema("pink")} ` + UU5.Common.Css.css`background-color: #FCE4EC`} />}
       </Plus4U5.App.Page>
-    )
+    );
   }
   //@@viewOff:render
 });
