@@ -1,4 +1,3 @@
-import regeneratorRuntime from "regenerator-runtime";
 import * as UU5 from "uu5g04";
 import * as UuOs8 from "../uu-os8/uu-os8.js";
 import Tools from "../tools.js";

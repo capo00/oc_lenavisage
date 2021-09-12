@@ -1,7 +1,6 @@
 /**
  * Server calls of application client.
  */
-import regeneratorRuntime from "regenerator-runtime";
 import * as Dao from "./model/dao/dao.js";
 
 let Calls = {

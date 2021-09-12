@@ -1,21 +1,23 @@
 {
   "product": "oc_lenavisageg01",
-  "version": "0.4.2-beta.6",
+  "version": "0.3.1-beta.1",
   "license": "License Commercial",
   "description": {
     "en": "",
     "cs": ""
   },
+  "docUri": "https://uuapp.plus4u.net/uu-myterritory-maing01/77869331ed894285b9a9de3c795bc5ea/userGate/clubDetail?id=5ef50fc13e8635002dc22398",
+  "flsUri": "https://uuapp.plus4u.net/uu-myterritory-maing01/77869331ed894285b9a9de3c795bc5ea/userGate/clubDetail?id=5ef50fc13e8635002dc22398",
+  "imageUri": "https://uuapp.plus4u.net/uu-myterritory-maing01/77869331ed894285b9a9de3c795bc5ea/userGate/clubDetail?id=5ef50fc13e8635002dc22398",
+  "devkit": {
+    "development": {
+      "appBoxLocationUri": "ues:UU-BT:OC.LENAVISAGE/APPBOX",
+      "appDeploymentUri": "ues:UUUI-BT[98234766879087459]:FAMILY_UUUI_FAT_RESOURCEPOOL_AWE[5e566d7ad24a21848dcc0d9c]:CAPEK.ONDREJ.TOOLKITG01[613c47310296c03b52fa0bfd]",
+      "resourcePoolUri": "ues:UUUI-BT:FAMILY_UUUI_FAT_RESOURCEPOOL_AWE"
+    }
+  },
   "oc_lenavisageg01": {
     "namespace": "LenaVisage",
-    "sourceUri": "https://cdn.plus4u.net/oc-lenavisageg01/%s/oc_lenavisageg01.min.js",
-    "docUri": "",
-    "imageUri": "",
-    "devkit": {
-      "development": {
-        "appBoxLocationUri": "ues:UU-BT:OC.LENAVISAGE/APPBOX",
-        "appDeploymentUri": null
-      }
-    }
+    "sourceUri": "https://cdn.plus4u.net/oc-lenavisageg01/%s/oc_lenavisageg01.min.js"
   }
 }

@@ -1,4 +1,3 @@
-import regeneratorRuntime from "regenerator-runtime";
 import * as Plus4U5 from "uu_plus4u5g01";
 import Binary from "./binary.js";
 import cache from "../cache.js";

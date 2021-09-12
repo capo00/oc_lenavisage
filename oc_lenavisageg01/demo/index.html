@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lena Visage</title>
+
+    <script src="https://cdn.plus4u.net/libs/systemjs/0.19.47/system.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.plus4u.net/uu-uu5g05/0.0.0/assets/example-config.js" crossorigin="anonymous"></script>
+    <script>
+      SystemJS.config({
+        "paths": {
+          "react": "https://cdn.plus4u.net/libs/react/16.14.0/react.min.js",
+          "react-dom": "https://cdn.plus4u.net/libs/react-dom/16.14.0/react-dom.min.js",
+          "create-react-class": "https://cdn.plus4u.net/libs/create-react-class/15.6.3/create-react-class.min.js",
+
+          "uu5g04": "https://cdn.plus4u.net/uu-uu5g04/1.0.0/uu5g04.min.js",
+          "uu5g04-bricks": "https://cdn.plus4u.net/uu-uu5g04/1.0.0/uu5g04-bricks.min.js",
+          "uu5g04-forms": "https://cdn.plus4u.net/uu-uu5g04/1.0.0/uu5g04-forms.min.js",
+          "uu5g04-block-layout": "https://cdn.plus4u.net/uu-uu5g04/1.0.0/uu5g04-block-layout.js",
+
+          "uu_appg01_core": "https://cdn.plus4u.net/uu-appg01-core/5.0.0/uu_appg01_core.min.js",
+          "uu_appg01": "https://cdn.plus4u.net/uu-appg01/5.0.0/uu_appg01.min.js",
+          "uu_appg01_oidc": "https://cdn.plus4u.net/uu-appg01-oidc/3.0.0/uu_appg01_oidc.min.js",
+          "uu_plus4u5g01": "https://cdn.plus4u.net/uu-plus4u5g01/4.0.0/uu_plus4u5g01.min.js",
+          "uu_plus4u5g01-bricks": "https://cdn.plus4u.net/uu-plus4u5g01/4.0.0/uu_plus4u5g01-bricks.min.js",
+          "uu_plus4u5g01-app": "https://cdn.plus4u.net/uu-plus4u5g01/4.0.0/uu_plus4u5g01-app.min.js",
+
+          "oc_lenavisageg01": "oc_lenavisageg01.min.js"
+        }
+      });
+
+      var UU5 = {
+        Environment: {
+          allowStatistics: false,
+          uu_app_oidc_redirect_uri: "./controllers/callback.html",
+          uu_app_oidc_primary_provider: "oidcg02",
+          // uu_app_oidc_providers_oidcg02_uri: "https://uuidentity.plus4u.net/uu-oidc-maing02/bb977a99f4cc4c37a2afce3fd599d0a7/oidc",
+          uu_app_oidc_providers_oidcg02_client_id: "00000a86b6f04416bed69c2bf6de45c1"
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <div id="uu5"></div>
+
+    <script
+      src="https://cdn.plus4u.net/uu-appg01-template/1.0.0/in-browser-transpilation.min.js"
+      crossorigin="anonymous"
+      data-transpilation-url-pattern="-"
+    ></script>
+    <script type="text/babel">
+      import React from "react";
+      import ReactDOM from "react-dom";
+      import LenaVisage from "oc_lenavisageg01";
+
+      ReactDOM.render(<LenaVisage.App />, document.getElementById('uu5'));
+    </script>
+  </body>
+</html>

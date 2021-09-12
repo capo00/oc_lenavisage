@@ -1,10 +1,10 @@
 {
   "name": "oc_lenavisageg01",
-  "version": "0.4.2-beta.6",
+  "version": "0.3.1-beta.1",
   "description": "",
   "license": "License Commercial",
   "namespace": "LenaVisage",
-  "spec": "uu5-lib; uu_appg01@1.3.0",
+  "spec": "uu5-lib; uu_appg01_devkit@4.2.2",
   "dependencies": {
     "uu5g04": "^1.0.0",
     "uu_plus4u5g01": "^4.0.0"
@@ -13,7 +13,7 @@
     "externals": {}
   },
   "devDependencies": {
-    "uu_appg01_devkit": "^2.0.0"
+    "uu_appg01_devkit": "^4.2.0"
   },
   "engines": {
     "node": ">=8.9.0"
@@ -26,12 +26,9 @@
     "dist": "uu_appg01_devkit package",
     "start": "uu_appg01_devkit start",
     "prettify": "uu_appg01_devkit prettify",
-    "deploy": "uu_appg01_devkit deploy",
-    "uuAppBox": "uu_appg01_devkit uuAppBox",
-    "uuCloudDeploy": "uu_appg01_devkit uuCloudDeploy",
-    "uuCloudUndeploy": "uu_appg01_devkit uuCloudUndeploy",
-    "uuCloudDeployList": "uu_appg01_devkit uuCloudDeployList",
-    "generate": "uu_appg01_devkit generate"
+    "generate": "uu_appg01_devkit generate",
+    "uuCmdCreate": "uu_appg01_devkit uuCmdCreate",
+    "uuAppDevKitUpgrade": "uu_appg01_devkit uuAppDevKitUpgrade"
   },
   "main": "dist-node/index.js",
   "jsnext:main": "dist-esm/index.js",
