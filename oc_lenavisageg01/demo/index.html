@@ -6,7 +6,7 @@
     <title>Lena Visage</title>
 
     <script src="https://cdn.plus4u.net/libs/systemjs/0.19.47/system.js" crossorigin="anonymous"></script>
-    <script src="https://cdn.plus4u.net/uu-uu5g05/0.0.0/assets/example-config.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.plus4u.net/uu-uu5g05/1.0.0/assets/example-config.js" crossorigin="anonymous"></script>
     <script>
       SystemJS.config({
         "paths": {
@@ -33,9 +33,8 @@
       var UU5 = {
         Environment: {
           allowStatistics: false,
-          uu_app_oidc_redirect_uri: "./controllers/callback.html",
+          uu_app_oidc_redirect_uri: location.href.replace(/index\.html.*$/, "controllers/callback.html"),
           uu_app_oidc_primary_provider: "oidcg02",
-          // uu_app_oidc_providers_oidcg02_uri: "https://uuidentity.plus4u.net/uu-oidc-maing02/bb977a99f4cc4c37a2afce3fd599d0a7/oidc",
           uu_app_oidc_providers_oidcg02_client_id: "00000a86b6f04416bed69c2bf6de45c1"
         }
       }

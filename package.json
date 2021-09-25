@@ -1,8 +1,10 @@
 {
   "name": "oc_lenavisageg01",
-  "version": "0.3.1-beta.1",
+  "version": "0.3.1-beta.2",
   "private": true,
-  "workspaces": ["oc_lenavisageg01"],
+  "workspaces": [
+    "oc_lenavisageg01"
+  ],
   "description": "",
   "license": "License Commercial",
   "spec": "nodejs-multi; uu_appg01_devkit@4.2.2",
