@@ -1,164 +1,157 @@
 //@@viewOn:imports
-import React from "react";
-import createReactClass from "create-react-class";
-import * as UU5 from "uu5g04";
-import "uu5g04-bricks";
+import { createComponent, useState } from "uu5g05";
+import { useSubAppData } from "uu_plus4u5g02";
 import Config from "../config/config.js";
-import { Category, Hair, Service, Quantity, Confirmation } from "../services/services.js";
 import Order from "../model/order.js";
+import Hair from "../services/hair.js";
+import Quantity from "../services/quantity.js";
+import Confirmation from "../services/confirmation.js";
+import Category from "../services/category.js";
+import Service from "../services/service.js";
 import Calls from "../calls.js";
 //@@viewOff:imports
 
-export const Services = createReactClass({
-  //@@viewOn:mixins
-  mixins: [UU5.Common.BaseMixin],
-  //@@viewOff:mixins
+//@@viewOn:constants
+//@@viewOff:constants
 
+//@@viewOn:helpers
+function ServiceByOrder({ order, setState, setService, services, activeServices }) {
+  let isMan = order.getCategory() === "man";
+
+  return (
+    <Service
+      services={order.getServiceItems()}
+      activeServices={order.listServices()}
+      onClick={(serviceKey, quantity) => {
+        if (order.hasService(serviceKey)) {
+          order.removeService(serviceKey);
+          setState("service");
+          setService(null);
+        } else {
+          order.addService(serviceKey);
+          setState(quantity ? "quantity" : "service");
+          setService(isMan ? null : order.getService(serviceKey));
+        }
+      }}
+      onSubmit={() => setState("confirmation")}
+      onBack={() => {
+        if (isMan) {
+          order.setCategory(null).clearServices();
+          setState(null);
+        } else {
+          order.setHair(null).clearServices();
+          setState("category");
+          setService(null);
+        }
+      }}
+    />
+  );
+}
+
+//@@viewOff:helpers
+
+const Services = createComponent({
   //@@viewOn:statics
-  statics: {
-    tagName: Config.TAG + "Services",
-    classNames: {
-      main: Config.CSS + "services"
-    }
-  },
+  uu5Tag: Config.TAG + "Services",
   //@@viewOff:statics
 
   //@@viewOn:propTypes
+  propTypes: {},
   //@@viewOff:propTypes
 
-  //@@viewOn:getDefaultProps
-  //@@viewOff:getDefaultProps
+  //@@viewOn:defaultProps
+  defaultProps: {},
+  //@@viewOff:defaultProps
 
-  //@@viewOn:reactLifeCycle
-  getInitialState() {
-    let order = new Order();
+  render(props) {
+    //@@viewOn:private
+    const { onRouteChange } = props;
 
-    return {
-      order,
-      state: null,
-      service: null
-    };
-  },
-  //@@viewOff:reactLifeCycle
+    const [state, setState] = useState(null);
+    const [service, setService] = useState(null);
 
-  //@@viewOn:interface
-  //@@viewOff:interface
+    const { data: { document, ...config } = {} } = useSubAppData();
+    const [order, setOrder] = useState(() => new Order(undefined, config));
+    //@@viewOff:private
 
-  //@@viewOn:overriding
-  //@@viewOff:overriding
-
-  //@@viewOn:private
-  _clear() {
-    this.setState(this.getInitialState());
-  },
-
-  _getService() {
-    let isMan = this.state.order.getCategory() === "man";
-
-    return (
-      <Service
-        services={this.state.order.getServiceItems()}
-        activeServices={this.state.order.listServices()}
-        onClick={(serviceKey, quantity) => {
-          if (this.state.order.hasService(serviceKey)) {
-            this.state.order.removeService(serviceKey);
-            this.setState({ state: "service", service: null });
-          } else {
-            this.state.order.addService(serviceKey);
-            this.setState({
-              state: quantity ? "quantity" : "service",
-              service: isMan ? null : this.state.order.getService(serviceKey)
-            });
-          }
-        }}
-        onSubmit={() => this.setState({ state: "confirmation" })}
-        onBack={() => {
-          if (isMan) {
-            this.state.order.setCategory(null).clearServices();
-            this.setState({ state: null });
-          } else {
-            this.state.order.setHair(null).clearServices();
-            this.setState({ state: "category", service: null });
-          }
-        }}
-      />
-    );
-  },
-
-  _getContent() {
-    switch (this.state.state) {
+    //@@viewOn:render
+    let result;
+    switch (state) {
       case "category":
-        if (this.state.order.getCategory() === "man") {
-          return this._getService();
+        if (order.getCategory() === "man") {
+          result = <ServiceByOrder order={order} setState={setState} setService={setService} services={{...order.getServiceItems()}} activeServices={[...order.listServices()]} />;
         } else {
-          return (
+          result = (
             <Hair
-              hair={this.state.order.getHairItems()}
-              onClick={hair => {
-                this.state.order.setHair(hair);
-                this.setState({ state: "service" });
+              hair={order.getHairItems()}
+              onClick={(hair) => {
+                order.setHair(hair);
+                setState("service");
               }}
               onBack={() => {
-                this.state.order.setCategory(null);
-                this.setState({ state: null });
+                order.setCategory(null);
+                setState(null);
               }}
             />
           );
         }
+        break;
 
       case "service":
-        return this._getService();
+        result = <ServiceByOrder order={order} setState={setState} setService={setService} services={{...order.getServiceItems()}} activeServices={[...order.listServices()]} />;
+        break;
 
       case "quantity":
-        return (
+        result = (
           <Quantity
-            service={this.state.service}
-            onClick={quantity => {
-              this.state.service.setQuantity(quantity);
-              this.setState({ state: "service", service: null })
+            service={service}
+            onClick={(quantity) => {
+              service.setQuantity(quantity);
+              setState("service");
+              setService(null);
             }}
             onBack={() => {
-              this.state.order.removeService(this.state.service);
-              this.setState({ state: "service", service: null })
+              order.removeService(service);
+              setState("service");
+              setService(null);
             }}
           />
         );
+        break;
 
       case "confirmation":
-        return (
+        result = (
           <Confirmation
-            order={this.state.order}
-            onConfirm={data => {
-              Calls.saveOrder(data);
-              this._clear();
+            order={order}
+            onConfirm={(order) => {
+              Calls.saveOrder(document, order);
+              setOrder(new Order(undefined, config));
+              setState(null);
+              setService(null);
             }}
-            onRefuse={() => this.setState({ state: "service" })}
+            onRefuse={() => setState("service")}
           />
         );
+        break;
 
       default:
-        return (
+        result = (
           <Category
-            onClick={category => {
-              this.state.order.setCategory(category);
-              this.setState({ state: "category" })
+            services={config.services}
+            onClick={(category) => {
+              order.setCategory(category);
+              setState("category");
             }}
-            onBack={() => this.props.onRoute("home")}
+            onBack={() => onRouteChange("home")}
           />
-        )
+        );
     }
-  },
-  //@@viewOff:private
 
-  //@@viewOn:render
-  render() {
-    return (
-      <UU5.Bricks.Div {...this.getMainPropsToPass()}>
-        {this._getContent()}
-      </UU5.Bricks.Div>
-    );
-  }
-  //@@viewOff:render
+    return result;
+    //@@viewOff:render
+  },
 });
 
+//@@viewOn:exports
 export default Services;
+//@@viewOff:exports

@@ -1,109 +1,96 @@
 //@@viewOn:imports
-import React from "react";
-import createReactClass from "create-react-class";
-import * as UU5 from "uu5g04";
-import "uu5g04-bricks";
-import Config from "../config/config.js";
-import { Confirmation } from "../services/services.js";
+import { createComponent, useState } from "uu5g05";
+import Uu5Elements from "uu5g05-elements";
+import { useSubAppData } from "uu_plus4u5g02";
+import Config, { EYELASH_NAME } from "../config/config.js";
+import Button from "../components/button.js";
 import Order from "../model/order.js";
+import Confirmation from "../services/confirmation.js";
 import Calls from "../calls.js";
-import { Button } from "../bricks/bricks.js";
-import { eyelash } from "../model/order.js"
 import Tools from "../model/tools.js";
+import TileGrid from "../components/tile-grid.js";
 //@@viewOff:imports
 
-export const Eyelash = createReactClass({
-  //@@viewOn:mixins
-  mixins: [UU5.Common.BaseMixin],
-  //@@viewOff:mixins
+//@@viewOn:constants
+//@@viewOff:constants
 
+//@@viewOn:helpers
+//@@viewOff:helpers
+
+const Eyelash = createComponent({
   //@@viewOn:statics
-  statics: {
-    tagName: Config.TAG + "Eyelash",
-    classNames: {
-      main: Config.CSS + "eyelash"
-    }
-  },
+  uu5Tag: Config.TAG + "Eyelash",
   //@@viewOff:statics
 
   //@@viewOn:propTypes
+  propTypes: {},
   //@@viewOff:propTypes
 
-  //@@viewOn:getDefaultProps
-  //@@viewOff:getDefaultProps
+  //@@viewOn:defaultProps
+  defaultProps: {},
+  //@@viewOff:defaultProps
 
-  //@@viewOn:reactLifeCycle
-  getInitialState() {
-    let order = new Order();
-    window.OcOrder = order;
+  render(props) {
+    //@@viewOn:private
+    const { onRouteChange, ...blockProps } = props;
+    const [state, setState] = useState(null);
+    const { data: { document, ...config } = {} } = useSubAppData();
+    const eyelash = config.eyelash;
 
-    return {
-      order,
-      state: null
-    };
-  },
-  //@@viewOff:reactLifeCycle
+    const [order, setOrder] = useState(() => new Order(undefined, config));
+    //@@viewOff:private
 
-  //@@viewOn:interface
-  //@@viewOff:interface
+    //@@viewOn:interface
+    //@@viewOff:interface
 
-  //@@viewOn:overriding
-  //@@viewOff:overriding
-
-  //@@viewOn:private
-  _clear() {
-    this.setState(this.getInitialState());
-  },
-
-  _getContent() {
-    switch (this.state.state) {
+    //@@viewOn:render
+    let result;
+    switch (state) {
       case "confirmation":
-        return (
+        result = (
           <Confirmation
-            order={this.state.order}
-            onConfirm={data => {
-              Calls.saveOrder(data);
-              this._clear();
-              this.props.onRoute("home");
+            order={order}
+            onConfirm={(order) => {
+              Calls.saveOrder(document, order);
+              setOrder(new Order(undefined, config));
+              setState(null);
+              onRouteChange("home");
             }}
-            onRefuse={() => this.setState({ state: null })}
+            onRefuse={() => setState(null)}
           />
         );
+        break;
 
       default:
-        return (
-          <UU5.Bricks.Section
-            className="uu5-common-padding-xs"
-            level={4}
-            header={[Tools.getBackButton(() => this.props.onRoute("home")), eyelash.name]}
+        result = (
+          <Uu5Elements.Block
+            header={[Tools.getBackButton(() => onRouteChange("home")), EYELASH_NAME]}
+            headerType="title"
+            {...blockProps}
+            className={Config.Css.css({ padding: 16 })}
           >
-            {Object.keys(eyelash.type).map(key => {
-              return (
+            <TileGrid columnCount={2}>
+              {Object.keys(eyelash).map((key) => (
                 <Button
                   key={key}
-                  children={eyelash.type[key].name}
                   onClick={() => {
-                    this.state.order.setEyelash(key);
-                    this.setState({ state: "confirmation" });
+                    order.setEyelash(key);
+                    setState("confirmation");
                   }}
-                />
-              )
-            })}
-          </UU5.Bricks.Section>
+                >
+                  {eyelash[key].name}
+                </Button>
+              ))}
+            </TileGrid>
+          </Uu5Elements.Block>
         );
     }
-  },
-  //@@viewOff:private
 
-  //@@viewOn:render
-  render() {
-    return (
-      <UU5.Bricks.Div {...this.getMainPropsToPass()}>
-        {this._getContent()}
-      </UU5.Bricks.Div>
-    );
-  }
-  //@@viewOff:render
+    return result;
+    //@@viewOff:render
+  },
 });
 
+//@@viewOn:exports
 export default Eyelash;
+//@@viewOff:exports

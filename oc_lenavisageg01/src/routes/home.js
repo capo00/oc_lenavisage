@@ -1,66 +1,60 @@
 //@@viewOn:imports
-import React from "react";
-import createReactClass from "create-react-class";
-import * as UU5 from "uu5g04";
-import "uu5g04-bricks";
-import Config from "./config/config.js";
-import { Button } from "../bricks/bricks.js";
+import { createComponent } from "uu5g05";
+import Uu5Elements from "uu5g05-elements";
+import Config from "../config/config.js";
+import Button from "../components/button.js";
+import TileGrid from "../components/tile-grid";
 //@@viewOff:imports
 
-export const Home = createReactClass({
-  //@@viewOn:mixins
-  mixins: [UU5.Common.BaseMixin],
-  //@@viewOff:mixins
+//@@viewOn:constants
+//@@viewOff:constants
 
+//@@viewOn:helpers
+//@@viewOff:helpers
+
+const Home = createComponent({
   //@@viewOn:statics
-  statics: {
-    tagName: Config.TAG + "Home",
-    classNames: {
-      main: Config.CSS + "home"
-    }
-  },
+  uu5Tag: Config.TAG + "Home",
   //@@viewOff:statics
 
   //@@viewOn:propTypes
+  propTypes: {},
   //@@viewOff:propTypes
 
-  //@@viewOn:getDefaultProps
-  //@@viewOff:getDefaultProps
+  //@@viewOn:defaultProps
+  defaultProps: {},
+  //@@viewOff:defaultProps
 
-  //@@viewOn:reactLifeCycle
-  //@@viewOff:reactLifeCycle
+  render(props) {
+    //@@viewOn:private
+    const { onRouteChange, ...blockProps } = props;
+    //@@viewOff:private
 
-  //@@viewOn:interface
-  //@@viewOff:interface
+    //@@viewOn:interface
+    //@@viewOff:interface
 
-  //@@viewOn:overriding
-  //@@viewOff:overriding
-
-  //@@viewOn:private
-  //@@viewOff:private
-
-  //@@viewOn:render
-  render() {
+    //@@viewOn:render
     return (
-      <UU5.Bricks.Section
-        {...this.getMainPropsToPass()}
-        className="uu5-common-padding-xs"
-        level={4}
+      <Uu5Elements.Block
         header="Přehled"
+        headerType="title"
+        {...blockProps}
+        className={Config.Css.css({ padding: 16 })}
       >
-        <Button children="Vlasy" onClick={() => this.props.onRoute("services")} />
-        <Button children="Řasy" onClick={() => this.props.onRoute("eyelash")} />
-        <br />
-        <Button children="Společenská akce" onClick={() => this.props.onRoute("socialEvent")} />
-        <Button children="Svatba" onClick={() => this.props.onRoute("wedding")} />
-        <br />
-        <br />
-        <Button children="Archiv" onClick={() => this.props.onRoute("archive")} />
-        <Button children="Zákazníci" onClick={() => this.props.onRoute("customers")} disabled />
-      </UU5.Bricks.Section>
+        <TileGrid columnCount={2}>
+          <Button onClick={() => onRouteChange("services")}>Vlasy</Button>
+          <Button onClick={() => onRouteChange("eyelash")}>Řasy</Button>
+          <Button onClick={() => onRouteChange("socialEvent")}>Společenská akce</Button>
+          <Button onClick={() => onRouteChange("wedding")}>Svatba</Button>
+          <Button onClick={() => onRouteChange("archive")}>Archiv</Button>
+          <Button onClick={() => onRouteChange("customers")} disabled>Zákazníci</Button>
+        </TileGrid>
+      </Uu5Elements.Block>
     );
-  }
-  //@@viewOff:render
+    //@@viewOff:render
+  },
 });
 
+//@@viewOn:exports
 export default Home;
+//@@viewOff:exports

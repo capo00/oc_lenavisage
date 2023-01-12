@@ -1,70 +1,60 @@
 //@@viewOn:imports
-import React from "react";
-import createReactClass from "create-react-class";
-import * as UU5 from "uu5g04";
-import "uu5g04-bricks";
+import { createComponent } from "uu5g05";
+import Uu5Elements from "uu5g05-elements";
 import Config from "../config/config.js";
-import Button from "../bricks/button.js";
-import PropTypes from "prop-types";
+import Button from "../components/button.js";
 import Tools from "../model/tools.js";
+import TileGrid from "../components/tile-grid";
 //@@viewOff:imports
 
-export const Quantity = createReactClass({
-  //@@viewOn:mixins
-  mixins: [
-    UU5.Common.BaseMixin,
-    UU5.Common.ElementaryMixin
-  ],
-  //@@viewOff:mixins
+//@@viewOn:constants
+//@@viewOff:constants
 
+//@@viewOn:helpers
+//@@viewOff:helpers
+
+const Quantity = createComponent({
   //@@viewOn:statics
-  statics: {
-    tagName: Config.TAG + "Quantity",
-    classNames: {
-      main: Config.CSS + "quantity"
-    }
-  },
+  uu5Tag: Config.TAG + "Quantity",
   //@@viewOff:statics
 
   //@@viewOn:propTypes
-  propTypes: {
-    onClick: PropTypes.func,
-    onBack: PropTypes.func,
-    service: PropTypes.object
-  },
+  propTypes: {},
   //@@viewOff:propTypes
 
-  //@@viewOn:getDefaultProps
-  //@@viewOff:getDefaultProps
+  //@@viewOn:defaultProps
+  defaultProps: {},
+  //@@viewOff:defaultProps
 
-  //@@viewOn:reactLifeCycle
-  //@@viewOff:reactLifeCycle
+  render(props) {
+    //@@viewOn:private
+    const { onBack, service, onClick, ...blockProps } = props;
+    //@@viewOff:private
 
-  //@@viewOn:interface
-  //@@viewOff:interface
+    //@@viewOn:interface
+    //@@viewOff:interface
 
-  //@@viewOn:overriding
-  //@@viewOff:overriding
-
-  //@@viewOn:private
-  //@@viewOff:private
-
-  //@@viewOn:render
-  render() {
+    //@@viewOn:render
     return (
-      <UU5.Bricks.Section
-        {...this.getMainPropsToPass()}
-        className="uu5-common-padding-xs"
-        level={4}
-        header={[Tools.getBackButton(this.props.onBack), ` Počet odměrek (${this.props.service.unit}ml)`]}
+      <Uu5Elements.Block
+        header={[Tools.getBackButton(onBack), ` Počet odměrek (${service.unit}ml)`]}
+        headerType="title"
+        {...blockProps}
+        className={Config.Css.css({ padding: 16 })}
       >
-        {[0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5, 5.5, 6, 6.5, 7, 7.5, 8].map(unit => (
-          <Button key={unit} children={(unit + "").replace(".", ",")} onClick={() => this.props.onClick(unit)} />
-        ))}
-      </UU5.Bricks.Section>
+        <TileGrid>
+          {[0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5, 5.5, 6, 6.5, 7, 7.5, 8].map((unit) => (
+            <Button key={unit} onClick={() => onClick(unit)}>
+              {(unit + "").replace(".", ",")}
+            </Button>
+          ))}
+        </TileGrid>
+      </Uu5Elements.Block>
     );
-  }
-  //@@viewOff:render
+    //@@viewOff:render
+  },
 });
 
+//@@viewOn:exports
 export default Quantity;
+//@@viewOff:exports

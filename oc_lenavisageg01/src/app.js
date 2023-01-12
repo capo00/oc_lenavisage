@@ -1,64 +1,65 @@
 //@@viewOn:imports
-import React from "react";
-import createReactClass from "create-react-class";
-import * as UU5 from "uu5g04";
-import * as Plus4U5 from "uu_plus4u5g01";
-import "uu_plus4u5g01-app";
+import { createComponent, useSession } from "uu5g05";
+import { SpaProvider, AppWorkspaceProvider, RouteDataProvider, usePerson } from "uu_plus4u5g02";
+import Plus4U5Elements from "uu_plus4u5g02-elements";
+import Plus4U5App from "uu_plus4u5g02-app";
 import Config from "./config/config.js";
-import CoreApp from "./core/app.js";
+import AppRouter from "./app-router.js";
+import Calls from "./calls.js";
 //@@viewOff:imports
 
-const App1 = createReactClass({
-  //@@viewOn:mixins
-  mixins: [UU5.Common.BaseMixin, UU5.Common.IdentityMixin],
-  //@@viewOff:mixins
+//@@viewOn:constants
+//@@viewOff:constants
 
+//@@viewOn:helpers
+//@@viewOff:helpers
+
+function AppProvider({ children }) {
+  const { data } = usePerson();
+  const mtBaseUri = data?.systemProfileSettings?.uuMyTerritoryMainBaseUri;
+
+  return (
+    <AppWorkspaceProvider key={mtBaseUri} isHome subApp="ocLenaVisage" handlerMap={{ load: () => Calls.loadAppWorkspace(mtBaseUri) }}>
+      <RouteDataProvider>{children}</RouteDataProvider>
+    </AppWorkspaceProvider>
+  );
+}
+
+const App = createComponent({
   //@@viewOn:statics
-  statics: {
-    tagName: Config.TAG + "App"
-  },
+  uu5Tag: Config.TAG + "App",
   //@@viewOff:statics
 
   //@@viewOn:propTypes
+  propTypes: {},
   //@@viewOff:propTypes
 
-  //@@viewOn:getDefaultProps
-  //@@viewOff:getDefaultProps
+  //@@viewOn:defaultProps
+  defaultProps: {},
+  //@@viewOff:defaultProps
 
-  //@@viewOn:reactLifeCycle
-  componentDidMount() {
-    if (process.env.NODE_ENV === "production") window.onbeforeunload = e => true;
-  },
-  //@@viewOff:reactLifeCycle
+  render(props) {
+    //@@viewOn:private
+    //@@viewOff:private
 
-  //@@viewOn:interface
-  //@@viewOff:interface
+    //@@viewOn:interface
+    //@@viewOff:interface
 
-  //@@viewOn:overriding
-  //@@viewOff:overriding
-
-  //@@viewOn:private
-  //@@viewOff:private
-
-  //@@viewOn:render
-  render() {
+    //@@viewOn:render
     return (
-      <Plus4U5.App.Page
-        {...this.getMainPropsToPass()}
-        className={UU5.Common.Css.css`& .plus4u5-app-top { background-color: #E91E63; }`}
-        type={1}
-        top={<Plus4U5.App.Top content="Lena Visage" />}
-      >
-        {this.isAuthenticated()
-          ? <CoreApp />
-          : <Plus4U5.App.Login className={`color-schema-${UU5.Environment.getColorSchema("pink")} ` + UU5.Common.Css.css`background-color: #FCE4EC`} />}
-      </Plus4U5.App.Page>
+      <SpaProvider skipAppWorkspaceProvider>
+        <AppProvider>
+          <Plus4U5App.Spa>
+            <AppRouter />
+          </Plus4U5App.Spa>
+        </AppProvider>
+      </SpaProvider>
     );
-  }
-  //@@viewOff:render
+    //@@viewOff:render
+  },
 });
 
-// export default App;
-
-export const App = CoreApp;
-export default CoreApp;
+//@@viewOn:exports
+export { App };
+export default App;
+//@@viewOff:exports

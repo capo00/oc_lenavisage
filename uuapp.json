@@ -1,6 +1,6 @@
 {
   "product": "oc_lenavisageg01",
-  "version": "0.4.2-beta.7",
+  "version": "2.0.0-beta.4",
   "license": "License Commercial",
   "description": {
     "en": "",
@@ -12,12 +12,12 @@
   "devkit": {
     "development": {
       "appBoxLocationUri": "ues:UU-BT:OC.LENAVISAGE/APPBOX",
-      "appDeploymentUri": "ues:UUUI-BT[98234766879087459]:FAMILY_UUUI_FAT_RESOURCEPOOL_AWE[5e566d7ad24a21848dcc0d9c]:CAPEK.ONDREJ.TOOLKITG01[613c47310296c03b52fa0bfd]",
-      "resourcePoolUri": "ues:UUUI-BT:FAMILY_UUUI_FAT_RESOURCEPOOL_AWE"
+      "appDeploymentUri": "ues:UUHUMANINTERFACEFAMILY-BT[76034904533459425]:FAMILY_UUHUMANINTERFACE_FAT_RESOURCEPOOL_AWE[6202518f1c544d65b64a96c3]:CAPEK.ONDREJ.TOOLKITG01[63bf158611b484f9221f0f86]",
+      "resourcePoolUri": "ues:UUHUMANINTERFACEFAMILY-BT:FAMILY_UUHUMANINTERFACE_FAT_RESOURCEPOOL_AWE"
     }
   },
   "oc_lenavisageg01": {
     "namespace": "LenaVisage",
-    "sourceUri": "https://cdn.plus4u.net/oc-lenavisageg01/%s/oc_lenavisageg01.min.js"
+    "sourceUri": "https://cdn.plus4u.net/beta/capek-ondrej-toolkitg01/%s/lena-visage/oc_lenavisageg01.min.js"
   }
 }

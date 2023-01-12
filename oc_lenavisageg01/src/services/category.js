@@ -1,68 +1,63 @@
 //@@viewOn:imports
-import React from "react";
-import PropTypes from "prop-types";
-import createReactClass from "create-react-class";
-import * as UU5 from "uu5g04";
-import "uu5g04-bricks";
+import { createComponent, PropTypes } from "uu5g05";
+import Uu5Elements from "uu5g05-elements";
 import Config from "../config/config.js";
 import { NAMES } from "../model/order.js";
 import Tools from "../model/tools.js";
+import TileGrid from "../components/tile-grid";
+import TileButtons from "../components/tile-buttons";
 //@@viewOff:imports
 
-export const Category = createReactClass({
-  //@@viewOn:mixins
-  mixins: [
-    UU5.Common.BaseMixin,
-    UU5.Common.ElementaryMixin,
-    UU5.Common.SectionMixin
-  ],
-  //@@viewOff:mixins
+//@@viewOn:constants
+//@@viewOff:constants
 
+//@@viewOn:helpers
+//@@viewOff:helpers
+
+const Category = createComponent({
   //@@viewOn:statics
-  statics: {
-    tagName: Config.TAG + "Category",
-    classNames: {
-      main: Config.CSS + "category"
-    }
-  },
+  uu5Tag: Config.TAG + "Category",
   //@@viewOff:statics
 
   //@@viewOn:propTypes
   propTypes: {
     onClick: PropTypes.func,
-    onBack: PropTypes.func
+    onBack: PropTypes.func,
   },
   //@@viewOff:propTypes
 
-  //@@viewOn:getDefaultProps
-  //@@viewOff:getDefaultProps
+  //@@viewOn:defaultProps
+  defaultProps: {},
+  //@@viewOff:defaultProps
 
-  //@@viewOn:reactLifeCycle
-  //@@viewOff:reactLifeCycle
+  render(props) {
+    //@@viewOn:private
+    const { services, onBack, onClick, ...blockProps } = props;
 
-  //@@viewOn:interface
-  //@@viewOff:interface
+    const items = {};
+    Object.keys(services).forEach((k) => items[k] = services[k].name);
+    //@@viewOff:private
 
-  //@@viewOn:overriding
-  //@@viewOff:overriding
+    //@@viewOn:interface
+    //@@viewOff:interface
 
-  //@@viewOn:private
-  //@@viewOff:private
-
-  //@@viewOn:render
-  render() {
+    //@@viewOn:render
     return (
-      <UU5.Bricks.Section
-        {...this.getMainPropsToPass()}
-        className="uu5-common-padding-xs"
-        level={4}
-        header={[Tools.getBackButton(this.props.onBack), " Kategorie"]}
+      <Uu5Elements.Block
+        header={[Tools.getBackButton(onBack), " Kategorie"]}
+        headerType="title"
+        {...blockProps}
+        className={Config.Css.css({ padding: 16 })}
       >
-        {Tools.getTileButtons(NAMES, this.props.onClick)}
-      </UU5.Bricks.Section>
+        <TileGrid>
+          <TileButtons items={items} onClick={onClick} />
+        </TileGrid>
+      </Uu5Elements.Block>
     );
-  }
-  //@@viewOff:render
+    //@@viewOff:render
+  },
 });
 
+//@@viewOn:exports
 export default Category;
+//@@viewOff:exports

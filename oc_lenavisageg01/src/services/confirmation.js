@@ -1,16 +1,14 @@
 //@@viewOn:imports
-import React from "react";
-import createReactClass from "create-react-class";
-import * as UU5 from "uu5g04";
-import "uu5g04-bricks";
-import "uu5g04-forms";
+import { createComponent, PropTypes } from "uu5g05";
+import Uu5Elements from "uu5g05-elements";
+import Uu5Forms from "uu5g05-forms";
 import Config from "../config/config.js";
-import PropTypes from "prop-types";
 import Tools from "../model/tools.js";
 import CustomerInput from "./customer-input.js";
 //@@viewOff:imports
 
-const rowClassName = UU5.Common.Css.css`
+//@@viewOn:constants
+const rowClassName = Config.Css.css`
   & > div {
     display: inline-block;
 
@@ -25,15 +23,17 @@ const rowClassName = UU5.Common.Css.css`
   }
 `;
 
-const level2ClassName = UU5.Common.Css.css`
+const level2ClassName = Config.Css.css`
   margin-left: 16px;
 `;
 
-const boldClassName = UU5.Common.Css.css`
+const boldClassName = Config.Css.css`
   border-top: 1px solid black;
   font-weight: bold;
 `;
+//@@viewOff:constants
 
+//@@viewOn:helpers
 const Row = ({ label, price, bold, level = 1 }) => {
   let classNames = [rowClassName];
   if (level === 2) classNames.push(level2ClassName);
@@ -48,12 +48,11 @@ const Row = ({ label, price, bold, level = 1 }) => {
 };
 
 function getServices(order, sum) {
-  let items = order.listServices().map(service => (
+  let items = order.listServices().map((service) => (
     <div key={service.key}>
       <Row label={service.name} price={service.price} />
       {service.quantity && (
-        <Row level={2} label={`${service.quantity}x ${service.unit}ml`}
-             price={service.quantity * service.unitPrice} />
+        <Row level={2} label={`${service.quantity}x ${service.unit}ml`} price={service.quantity * service.unitPrice} />
       )}
     </div>
   ));
@@ -73,97 +72,68 @@ function getServices(order, sum) {
     </div>
   );
 
-  return (
-    <div>
-      {items}
-    </div>
-  )
+  return <div>{items}</div>;
 }
 
-export const Confirmation = createReactClass({
-  //@@viewOn:mixins
-  mixins: [
-    UU5.Common.BaseMixin,
-    UU5.Common.ElementaryMixin
-  ],
-  //@@viewOff:mixins
+//@@viewOff:helpers
 
+const Confirmation = createComponent({
   //@@viewOn:statics
-  statics: {
-    tagName: Config.TAG + "Confirmation",
-    classNames: {
-      main: Config.CSS + "confirmation"
-    }
-  },
+  uu5Tag: Config.TAG + "Confirmation",
   //@@viewOff:statics
 
   //@@viewOn:propTypes
   propTypes: {
     onConfirm: PropTypes.func,
     onRefuse: PropTypes.func,
-    order: PropTypes.object
+    order: PropTypes.object,
   },
   //@@viewOff:propTypes
 
-  //@@viewOn:getDefaultProps
-  //@@viewOff:getDefaultProps
+  //@@viewOn:defaultProps
+  defaultProps: {},
+  //@@viewOff:defaultProps
 
-  //@@viewOn:reactLifeCycle
-  //@@viewOff:reactLifeCycle
+  render(props) {
+    //@@viewOn:private
+    const { order, onConfirm, onRefuse, ...blockProps } = props;
+    const summary = order.getSummary();
+    //@@viewOff:private
 
-  //@@viewOn:interface
-  //@@viewOff:interface
+    //@@viewOn:interface
+    //@@viewOff:interface
 
-  //@@viewOn:overriding
-  //@@viewOff:overriding
-
-  //@@viewOn:private
-  _confirm(order) {
-    if (this._customer.isValid()) {
-      let customer = this._customer.getValue();
-      let desc = this._desc.getValue();
-
-      let result = { ...order };
-
-      if (customer) result.customer = customer;
-      if (desc) result.desc = desc;
-
-      this.props.onConfirm(result);
-    }
-  },
-  //@@viewOff:private
-
-  //@@viewOn:render
-  render() {
-    let summary = this.props.order.getSummary();
-
+    //@@viewOn:render
     return (
-      <UU5.Bricks.Section
-        {...this.getMainPropsToPass()}
-        className="uu5-common-padding-xs"
-        level={4}
-        header={[Tools.getBackButton(this.props.onRefuse), this.props.order.getTitle()]}
+      <Uu5Elements.Block
+        header={[Tools.getBackButton(onRefuse), " " + order.getTitle()]}
+        headerType="title"
+        {...blockProps}
+        className={Config.Css.css({ padding: 16 })}
       >
-        <CustomerInput
-          ref_={customer => this._customer = customer}
-          className={UU5.Common.Css.css`margin-bottom: 24px`}
-        />
-        {getServices(this.props.order, summary.sum)}
-        <UU5.Forms.TextArea placeholder="Poznámka" ref_={area => this._desc = area} />
-        <UU5.Bricks.Button
-          className={UU5.Common.Css.css`margin-top: 8px`}
-          onClick={() => this._confirm(summary)}
-          content="Potvrdit"
-          size="xl"
-          displayBlock
-          colorSchema="primary"
-        />
-      </UU5.Bricks.Section>
+        <Uu5Forms.Form
+          onSubmit={(e) => {
+            let { customer } = e.data.value;
+            if (customer && typeof customer === "string") customer = { name: customer };
+            onConfirm({ ...summary, ...e.data.value, customer });
+          }}
+          className={Config.Css.css({ display: "grid", gap: 16 })}
+        >
+          <CustomerInput name="customer" placeholder="Zákazník" />
+          <div>{getServices(order, summary.sum)}</div>
+          <Uu5Forms.FormTextArea name="desc" placeholder="Poznámka" />
+          <Uu5Forms.SubmitButton size="xl" width="100%">
+            Potvrdit
+          </Uu5Forms.SubmitButton>
+        </Uu5Forms.Form>
+      </Uu5Elements.Block>
     );
-  }
-  //@@viewOff:render
+    //@@viewOff:render
+  },
 });
 
 Confirmation.getServices = getServices;
 
+//@@viewOn:exports
 export default Confirmation;
+//@@viewOff:exports

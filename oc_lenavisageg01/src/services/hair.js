@@ -1,67 +1,56 @@
 //@@viewOn:imports
-import React from "react";
-import PropTypes from "prop-types";
-import createReactClass from "create-react-class";
-import * as UU5 from "uu5g04";
-import "uu5g04-bricks";
+import { createComponent } from "uu5g05";
+import Uu5Elements from "uu5g05-elements";
 import Config from "../config/config.js";
 import Tools from "../model/tools.js";
+import TileGrid from "../components/tile-grid";
+import TileButtons from "../components/tile-buttons";
 //@@viewOff:imports
 
-export const Hair = createReactClass({
-  //@@viewOn:mixins
-  mixins: [
-    UU5.Common.BaseMixin,
-    UU5.Common.ElementaryMixin
-  ],
-  //@@viewOff:mixins
+//@@viewOn:constants
+//@@viewOff:constants
 
+//@@viewOn:helpers
+//@@viewOff:helpers
+
+const Hair = createComponent({
   //@@viewOn:statics
-  statics: {
-    tagName: Config.TAG + "Hair",
-    classNames: {
-      main: Config.CSS + "hair"
-    }
-  },
+  uu5Tag: Config.TAG + "Hair",
   //@@viewOff:statics
 
   //@@viewOn:propTypes
-  propTypes: {
-    hair: PropTypes.object,
-    onClick: PropTypes.func,
-    onBack: PropTypes.func
-  },
+  propTypes: {},
   //@@viewOff:propTypes
 
-  //@@viewOn:getDefaultProps
-  //@@viewOff:getDefaultProps
+  //@@viewOn:defaultProps
+  defaultProps: {},
+  //@@viewOff:defaultProps
 
-  //@@viewOn:reactLifeCycle
-  //@@viewOff:reactLifeCycle
+  render(props) {
+    //@@viewOn:private
+    const { onBack, hair, onClick, ...blockProps } = props;
+    //@@viewOff:private
 
-  //@@viewOn:interface
-  //@@viewOff:interface
+    //@@viewOn:interface
+    //@@viewOff:interface
 
-  //@@viewOn:overriding
-  //@@viewOff:overriding
-
-  //@@viewOn:private
-  //@@viewOff:private
-
-  //@@viewOn:render
-  render() {
+    //@@viewOn:render
     return (
-      <UU5.Bricks.Section
-        {...this.getMainPropsToPass()}
-        className="uu5-common-padding-xs"
-        level={4}
-        header={[Tools.getBackButton(this.props.onBack), " Vlasy"]}
+      <Uu5Elements.Block
+        header={[Tools.getBackButton(onBack), " Vlasy"]}
+        headerType="title"
+        {...blockProps}
+        className={Config.Css.css({ padding: 16 })}
       >
-        {Tools.getTileButtons(this.props.hair, this.props.onClick)}
-      </UU5.Bricks.Section>
+        <TileGrid>
+          <TileButtons items={hair} onClick={onClick} />
+        </TileGrid>
+      </Uu5Elements.Block>
     );
-  }
-  //@@viewOff:render
+    //@@viewOff:render
+  },
 });
 
+//@@viewOn:exports
 export default Hair;
+//@@viewOff:exports

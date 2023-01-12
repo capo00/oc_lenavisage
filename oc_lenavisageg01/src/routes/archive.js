@@ -1,66 +1,81 @@
 //@@viewOn:imports
-import React from "react";
-import createReactClass from "create-react-class";
-import PropTypes from "prop-types";
-import * as UU5 from "uu5g04";
-import "uu5g04-bricks";
-import Config from "./config/config.js";
+import { createComponent, useDataObject, useLayoutEffect, useState } from "uu5g05";
+import Uu5Elements from "uu5g05-elements";
+import { useSubAppData } from "uu_plus4u5g02";
+import Config from "../config/config.js";
 import Calls from "../calls.js";
-import { Button, OrderList } from "../bricks/bricks.js";
-import Tools from "../model/tools";
+import OrderList from "../components/order-list.js";
+import Tools from "../model/tools.js";
 //@@viewOff:imports
 
-export const Archive = createReactClass({
-  //@@viewOn:mixins
-  mixins: [UU5.Common.BaseMixin, UU5.Common.LoadMixin],
-  //@@viewOff:mixins
+//@@viewOn:constants
+//@@viewOff:constants
 
+//@@viewOn:helpers
+//@@viewOff:helpers
+
+const Archive = createComponent({
   //@@viewOn:statics
-  statics: {
-    tagName: Config.TAG + "Archive",
-    classNames: {
-      main: Config.CSS + "archive"
-    },
-    calls: {
-      onLoad: "listOrders"
-    }
-  },
+  uu5Tag: Config.TAG + "Archive",
   //@@viewOff:statics
 
   //@@viewOn:propTypes
+  propTypes: {},
   //@@viewOff:propTypes
 
-  //@@viewOn:getDefaultProps
-  //@@viewOff:getDefaultProps
+  //@@viewOn:defaultProps
+  defaultProps: {},
+  //@@viewOff:defaultProps
 
-  //@@viewOn:reactLifeCycle
-  componentWillMount() {
-    this.setCalls(Calls);
-  },
-  //@@viewOff:reactLifeCycle
+  render(props) {
+    //@@viewOn:private
+    const { onRouteChange, ...blockProps } = props;
+    const [year, setYear] = useState();
 
-  //@@viewOn:interface
-  //@@viewOff:interface
+    const { data: { document } = {} } = useSubAppData();
 
-  //@@viewOn:overriding
-  //@@viewOff:overriding
+    const { data } = useDataObject({
+      handlerMap: {
+        load: async () => {
+          const data = await Calls.listOrders(document);
+          return data.itemList.map(({ year }) => year).sort((a, b) => a > b ? -1 : a < b ? 1 : 0);
+        },
+      },
+    });
 
-  //@@viewOn:private
-  //@@viewOff:private
+    useLayoutEffect(() => {
+      if (data && !year) setYear(data[0]);
+    }, [data]);
+    //@@viewOff:private
 
-  //@@viewOn:render
-  render() {
+    //@@viewOn:interface
+    //@@viewOff:interface
+
+    //@@viewOn:render
     return (
-      <UU5.Bricks.Section
-        {...this.getMainPropsToPass()}
-        className="uu5-common-padding-xs"
-        level={4}
-        header={[Tools.getBackButton(() => this.props.onRoute("home")), " Archiv"]}
+      <Uu5Elements.Block
+        header={[Tools.getBackButton(() => onRouteChange("home")), " Archiv"]}
+        headerType="title"
+        {...blockProps}
+        className={Config.Css.css({ padding: 16 })}
       >
-        {this.getLoadFeedbackChildren(dtoOut => <OrderList items={dtoOut} />)}
-      </UU5.Bricks.Section>
+        <div className={Config.Css.css({ padding: 16 })}>
+          {data && year ? (
+            <>
+              {data.length > 1 && (
+                <Uu5Elements.Tabs
+                  itemList={data.map((year) => ({ label: year, code: year }))}
+                  activeCode={year}
+                  onChange={(e) => setYear(e.data.activeCode)}
+                />
+              )}
+              <OrderList key={year} year={year} />
+            </>
+          ) : <Uu5Elements.Pending size="max" />}
+        </div>
+      </Uu5Elements.Block>
     );
-  }
+  },
   //@@viewOff:render
 });
 

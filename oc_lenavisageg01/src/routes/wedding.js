@@ -1,291 +1,291 @@
 //@@viewOn:imports
-import React from "react";
-import createReactClass from "create-react-class";
-import * as UU5 from "uu5g04";
-import "uu5g04-bricks";
-import "uu5g04-forms";
-import "uu5g04-block-layout";
-import Config from "../config/config.js";
-import {Confirmation} from "../services/services.js";
+import { createVisualComponent, useDataList, useState } from "uu5g05";
+import Uu5Elements from "uu5g05-elements";
+import Uu5Forms from "uu5g05-forms";
+import { useSubAppData } from "uu_plus4u5g02";
+import Config, { WEDDING_NAME } from "../config/config.js";
+import Confirmation from "../services/confirmation.js";
 import Order from "../model/order.js";
 import Calls from "../calls.js";
-import {Button} from "../bricks/bricks.js";
-import {eyelash, wedding} from "../model/order.js"
 import Tools from "../model/tools.js";
-import CustomerInput from "../services/customer-input";
+import CustomerInput from "../services/customer-input.js";
+
 //@@viewOff:imports
 
-export const Wedding = createReactClass({
-  //@@viewOn:mixins
-  mixins: [UU5.Common.BaseMixin],
-  //@@viewOff:mixins
+function getGuestRow(i, value, wedding, setGuests) {
+  return (
+    <Uu5Forms.Checkboxes
+      key={i}
+      name={"guest-" + (i + 1)}
+      label={i + 1 + ". host"}
+      itemList={Object.keys(wedding.guest).map((key) => ({
+        value: key,
+        label: wedding.guest[key].name,
+      }))}
+      value={value}
+      onChange={(e) => {
+        setGuests((guests) => {
+          let newGuests = [...guests];
+          newGuests[i] = e.data.value;
+          return newGuests;
+        });
+      }}
+    />
+  );
+}
 
-  //@@viewOn:statics
-  statics: {
-    tagName: Config.TAG + "Wedding",
-    classNames: {
-      main: Config.CSS + "wedding"
-    }
+const MODAL_HEADER = {
+  create: "Vytvořit svatbu",
+  update: "Upravit svatbu",
+  payment: "Platba",
+};
+
+function getPayment(order) {
+  return (
+    <>
+      <div>{order.getCustomer().name}</div>
+      <div><Uu5Elements.DateTime value={order.getWeddingDate()} /></div>
+
+      {Confirmation.getServices(order, order.getSummary().sum)}
+    </>
+  );
+}
+
+function getCreateOrUpdate(config, guests, setGuests, updatedItem) {
+  const { data: item } = updatedItem || {};
+  return (
+    <Uu5Forms.Form.View className={Config.Css.css({ display: "grid", gap: 16 })}>
+      <Uu5Forms.FormDateTime name="date" required label="Datum" initialValue={item?.weddingDate} />
+      <CustomerInput name="customer" placeholder="Zákazník" initialValue={item?.customer?.id || item?.customer} />
+      <Uu5Forms.FormSelect
+        name="bride"
+        label="Nevěsta"
+        itemList={Object.keys(config.wedding.bride).map((key) => {
+          return { value: key, children: config.wedding.bride[key].name };
+        })}
+        initialValue={item?.bride?.code}
+      />
+
+      {guests.map((value, i) => getGuestRow(i, value, config.wedding, setGuests))}
+      {getGuestRow(guests.length, undefined, config.wedding, setGuests)}
+
+      <Uu5Forms.FormTextArea name="desc" placeholder="Poznámka" initialValue={item?.desc} />
+    </Uu5Forms.Form.View>
+  );
+}
+
+const FOOTER = {
+  payment: (order, handleUpdate, handleClose) => {
+    return (
+      <>
+        {[500, 1000, 1500, 2000].map((price) => (
+          <Uu5Elements.Button
+            colorScheme="pink"
+            significance="distinct"
+            disabled={price === order.getDeposit()}
+            key={price}
+            onClick={async () => {
+              order.setDeposit(price);
+              const data = { ...order.getSummary() };
+              data.depositDate = new Date().toISOString();
+
+              await handleUpdate(data);
+              handleClose();
+            }}
+          >
+            {price}
+          </Uu5Elements.Button>
+        ))}
+        <Uu5Elements.Button
+          colorScheme="pink"
+          significance="highlighted"
+          onClick={async () => {
+            let data = { ...order.getSummary() };
+            data.payDate = new Date().toISOString();
+
+            await handleUpdate(data);
+            handleClose();
+          }}
+        >
+          Zaplatit ({order.getSummary().sum - order.getDeposit()})
+        </Uu5Elements.Button>
+      </>
+    );
   },
+  create: () => {
+    return (
+      <Uu5Forms.SubmitButton colorScheme="pink">
+        Vytvořit
+      </Uu5Forms.SubmitButton>
+    );
+  },
+  update: () => {
+    return (
+      <Uu5Forms.SubmitButton colorScheme="pink">
+        Upravit
+      </Uu5Forms.SubmitButton>
+    );
+  },
+};
+
+export const Wedding = createVisualComponent({
+  //@@viewOn:statics
+  uu5Tag: Config.TAG + "Wedding",
   //@@viewOff:statics
 
   //@@viewOn:propTypes
   //@@viewOff:propTypes
 
-  //@@viewOn:getDefaultProps
-  //@@viewOff:getDefaultProps
-
-  //@@viewOn:reactLifeCycle
-  getInitialState() {
-    return {
-      state: "list",
-      order: null,
-      guests: []
-    };
-  },
-  //@@viewOff:reactLifeCycle
-
-  //@@viewOn:interface
-  //@@viewOff:interface
-
-  //@@viewOn:overriding
-  //@@viewOff:overriding
-
-  //@@viewOn:private
-  _clear() {
-    this.setState(this.getInitialState());
-  },
-
-  _getContent() {
-    switch (this.state.state) {
-      case "list":
-        return (
-          <UU5.Bricks.Section
-            className="uu5-common-padding-xs"
-            level={4}
-            header={[Tools.getBackButton(() => this.props.onRoute("home")), wedding.name]}
-          >
-            <UU5.Common.ListDataManager onLoad={Calls.listOrders}>
-              {(({ data, viewState, handleCreate }) => {
-                if (viewState === "load") {
-                  return <UU5.Bricks.Loading />;
-                } else if (viewState === "error") {
-                  return "Error";
-                } else if (data) {
-                  const orders = data.filter(item => item.bride && !item.payDate).sort((a, b) => {
-                    if (a.weddingDate < b.weddingDate) return -1;
-                    if (a.weddingDate > b.weddingDate) return 1;
-                    return 0;
-                  });
-
-                  return (
-                    <div>
-                      <UU5.Bricks.Button bgStyle="outline" colorSchema="pink"
-                                         onClick={() => this.setState({ state: "create", order: new Order() })}>
-                        <UU5.Bricks.Icon icon="mdi-plus" />
-                      </UU5.Bricks.Button>
-                      {orders.map(item => {
-                        return (
-                          <UU5.BlockLayout.Tile key={item.id}>
-                            <UU5.BlockLayout.Block actions={[
-                              {
-                                colorSchema: "primary",
-                                icon: "mdi-pencil",
-                                active: true,
-                                onClick: () => this.setState({ state: "update", order: new Order(item) })
-                              },
-                              {
-                                colorSchema: "primary",
-                                icon: "mdi-cash-usd",
-                                active: true,
-                                onClick: () => this.setState({ state: "payment", order: new Order(item) })
-                              }
-                            ]}>
-                              <UU5.BlockLayout.Row>
-                                <UU5.BlockLayout.Text weight="primary">
-                                  {item.customer && item.customer.name}
-                                </UU5.BlockLayout.Text>
-                              </UU5.BlockLayout.Row>
-                              <UU5.BlockLayout.Row>
-                                {item.weddingDate && new Date(item.weddingDate).toLocaleString().replace(/:00$/, "")}
-                              </UU5.BlockLayout.Row>
-                            </UU5.BlockLayout.Block>
-                          </UU5.BlockLayout.Tile>
-                        )
-                      })}
-                    </div>
-                  )
-                }
-              })}
-            </UU5.Common.ListDataManager>
-          </UU5.Bricks.Section>
-        );
-        break;
-
-      case "payment":
-        this.state.order.setGuests(this.state.guests);
-        return (
-          <UU5.Bricks.Section
-            className="uu5-common-padding-xs"
-            level={4}
-            header={[Tools.getBackButton(() => this.setState({ state: "update" })), "Platba"]}
-          >
-
-            <div>{this.state.order.getCustomer().name}</div>
-            <div>{this.state.order.getWeddingDate().toLocaleString()}</div>
-
-            {Confirmation.getServices(this.state.order, this.state.order.getSummary().sum)}
-
-            {[500, 1000, 1500, 2000].map(price => (
-              <Button
-                size="s"
-                disabled={price === this.state.order.getDeposit()}
-                key={price}
-                onClick={async () => {
-                  this.state.order.setDeposit(price);
-                  const data = { ...this.state.order.getSummary() };
-                  data.depositDate = new Date().toISOString();
-                  await Calls.saveOrder(data);
-                  this.setState({ state: "list" });
-                }}
-              >
-                {price}
-              </Button>
-            ))}
-
-            <div className={UU5.Common.Css.css`padding: 4px`}>
-              <UU5.Bricks.Button
-                onClick={async () => {
-                  let data = { ...this.state.order.getSummary() };
-                  data.payDate = new Date().toISOString();
-
-                  await Calls.saveOrder(data);
-                  this.setState({ state: "list" });
-                }}
-                size="xl"
-                displayBlock
-                colorSchema="primary"
-              >
-                Zaplatit ({this.state.order.getSummary().sum - this.state.order.getDeposit()})
-              </UU5.Bricks.Button>
-
-              <UU5.Bricks.Button
-                onClick={() => {
-                  this.setState({ state: "list" });
-                }}
-                size="xl"
-                displayBlock
-                colorSchema="primary"
-                bgStyle="outline"
-              >
-                Seznam
-              </UU5.Bricks.Button>
-            </div>
-          </UU5.Bricks.Section>
-        );
-
-      case "create":
-      case "update":
-        return (
-          <UU5.Bricks.Section
-            className="uu5-common-padding-xs"
-            level={4}
-            header={[Tools.getBackButton(() => this.setState({ state: "list" })), (this.state.state === "create" ? "Vytvořit" : "Upravit") + " svatbu"]}
-          >
-            <UU5.Forms.DateTimePicker
-              required
-              controlled={false}
-              valueType="date"
-              label={wedding.date}
-              value={this.state.order.getWeddingDate() || undefined}
-              onChange={opt => {
-                this.state.order.setWeddingDate(opt.value);
-                opt.component.onChangeDefault(opt);
-              }}
-            />
-            <CustomerInput
-              value={this.state.order.getCustomer() || undefined}
-              onChange={customer => this.state.order.setCustomer(customer)}
-              className={UU5.Common.Css.css`margin-bottom: 24px`}
-            />
-            <UU5.Forms.Select
-              controlled={false}
-              label={wedding.category.bride.name}
-              onChange={opt => {
-                this.state.order.setBrideType(opt.value);
-                opt.component.onChangeDefault(opt);
-              }}
-              value={this.state.order.getBrideType() || undefined}
-            >
-              {Object.keys(wedding.category.bride.type).map(key => {
-                return (
-                  <UU5.Forms.Select.Option key={key} value={key} content={wedding.category.bride.type[key].name} />
-                );
-              })}
-            </UU5.Forms.Select>
-
-            {this.state.guests.map((value, i) => this._getGuestRow(i, value))}
-            {this._getGuestRow(this.state.guests.length)}
-
-            <UU5.Forms.TextArea
-              value={this.state.order.getAnnotation() || undefined}
-              placeholder="Poznámka"
-              ref_={area => this._desc = area}
-              onBlur={({ value }) => this.state.order.setAnnotation(value)}
-            />
-
-            <div className={UU5.Common.Css.css`padding: 4px`}>
-              <UU5.Bricks.Button
-                onClick={async () => {
-                  let result = { ...this.state.order.getSummary() };
-
-                  let orderData = await Calls.saveOrder(result);
-                  this.state.order.setId(orderData.id);
-
-                  this.setState({ state: "payment" });
-                }}
-                size="xl"
-                displayBlock
-                colorSchema="primary"
-              >
-                Ok
-              </UU5.Bricks.Button>
-            </div>
-          </UU5.Bricks.Section>
-        );
-    }
-  },
-
-  _getGuestRow(i, value) {
-    return (
-      <UU5.Forms.Checkboxes
-        key={i}
-        className={UU5.Common.Css.css`& .uu5-forms-checkbox { display: inline-block; }`}
-        label={(i + 1) + ". " + wedding.category.guest.name.toLowerCase()}
-        inline
-        value={Object.keys(wedding.category.guest.type).map(key => ({
-          name: key,
-          label: wedding.category.guest.type[key].name,
-          value: value ? value[key] : false
-        }))}
-        onChange={opt => {
-          let guests = [...this.state.guests];
-          guests[i] = opt.value;
-          this.setState({ guests });
-        }}
-      />
-    )
-  },
-  //@@viewOff:private
+  //@@viewOn:defaultProps
+  //@@viewOff:defaultProps
 
   //@@viewOn:render
-  render() {
+  render(props) {
+    const { onRouteChange } = props;
+
+    const [modalState, setModalState] = useState(null);
+    const [updatedItem, setUpdatedItem] = useState(null);
+    const [order, setOrder] = useState(null);
+    const [guests, setGuests] = useState([]);
+
+    const { data: { document, ...config } = {} } = useSubAppData();
+    const dataList = useDataList({
+      handlerMap: {
+        load: () => Calls.listOrdersByYear(document, new Date().getFullYear()),
+        create: (data) => Calls.createOrder(document, data),
+      },
+      itemHandlerMap: {
+        update: (data) => Calls.updateOrder(document, data),
+        delete: (data) => Calls.deleteOrder(document, data),
+      },
+    });
+
+    let result;
+    if (dataList.state === "pendingNoData") {
+      result = <Uu5Elements.Pending size="max" />;
+    } else if (dataList.data) {
+      const orders = dataList.data
+        .filter(({ data }) => data.bride && !data.payDate)
+        .sort((a, b) => {
+          if (a.weddingDate < b.weddingDate) return -1;
+          if (a.weddingDate > b.weddingDate) return 1;
+          return 0;
+        });
+
+      result = (
+        <div className={Config.Css.css({ display: "grid", gap: 8 })}>
+          {orders.map((orderItem) => {
+            const item = orderItem.data;
+            return (
+              <Uu5Elements.Tile
+                key={item.id}
+                header={item.customer?.name}
+                actionList={[
+                  {
+                    colorScheme: "pink",
+                    significance: "highlighted",
+                    icon: "mdi-currency-usd",
+                    onClick: () => {
+                      setModalState("payment");
+                      const order = new Order(item, config);
+                      if (item.guests && item.guests.length) {
+                        order.setGuests(item.guests.map((it) => Object.keys(it)));
+                      }
+                      setOrder(order);
+                      setUpdatedItem(orderItem);
+                    },
+                  },
+                  {
+                    colorScheme: "pink",
+                    icon: "mdi-pencil",
+                    onClick: () => {
+                      setModalState("update");
+                      setOrder(new Order(item, config));
+                      setUpdatedItem(orderItem);
+                      setGuests(item.guests.map((it) => Object.keys(it)));
+                    },
+                  },
+                  {
+                    colorScheme: "pink",
+                    icon: "mdi-delete",
+                    onClick: () => orderItem.handlerMap.delete(),
+                  },
+                ]}
+              >
+                <div className={Config.Css.css({ display: "grid", gridTemplateColumns: "1fr 1fr" })}>
+                  {item.weddingDate ? <Uu5Elements.DateTime value={item.weddingDate} /> : ""}
+                  <span className={Config.Css.css({ justifySelf: "end" })}>
+                    {item.deposit ? <><Uu5Elements.Number value={item.deposit} /> / </> : null}
+                    {<b><Uu5Elements.Number value={item.sum} currency="CZK" maxDecimalDigits={0} /></b>}
+                  </span>
+                </div>
+              </Uu5Elements.Tile>
+            );
+          })}
+        </div>
+      );
+    } else {
+      result = dataList.state;
+    }
+
+    function handleClose() {
+      setModalState(null);
+      setUpdatedItem(null);
+      setOrder(null);
+      setGuests([]);
+    }
+
     return (
-      <UU5.Bricks.Div {...this.getMainPropsToPass()}>
-        {this._getContent()}
-      </UU5.Bricks.Div>
+      <Uu5Elements.Block
+        className={Config.Css.css({ padding: 16 })}
+        headerType="title"
+        header={[Tools.getBackButton(() => onRouteChange("home")), WEDDING_NAME]}
+        actionList={[
+          {
+            icon: "mdi-plus",
+            tooltip: "Přidat svatbu",
+            significance: "highlighted",
+            colorScheme: "pink",
+            onClick: () => {
+              setModalState("create");
+              setOrder(new Order(undefined, config));
+            },
+          },
+        ]}
+      >
+        {result}
+
+        <Uu5Forms.Form.Provider
+          key={modalState || "none"}
+          onSubmit={async (e) => {
+            let { date, customer, bride, desc } = e.data.value;
+
+            order.setWeddingDate(date);
+            order.setCustomer(customer);
+            order.setBrideType(bride);
+            order.setGuests(guests);
+            order.setAnnotation(desc);
+
+            let result = { ...order.getSummary() };
+            const call = updatedItem ? updatedItem.handlerMap.update : dataList.handlerMap.create;
+
+            await call(result);
+
+            handleClose();
+          }}
+        >
+          <Uu5Elements.Modal
+            open={!!modalState}
+            onClose={handleClose}
+            header={MODAL_HEADER[modalState]}
+            footer={FOOTER[modalState]?.(order, updatedItem?.handlerMap?.update, handleClose)}
+          >
+            {modalState ? modalState === "payment" ? getPayment(order) : getCreateOrUpdate(config, guests, setGuests, updatedItem) : null}
+          </Uu5Elements.Modal>
+        </Uu5Forms.Form.Provider>
+      </Uu5Elements.Block>
     );
-  }
+  },
   //@@viewOff:render
 });
 

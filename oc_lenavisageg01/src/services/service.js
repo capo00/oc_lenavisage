@@ -1,29 +1,46 @@
 //@@viewOn:imports
-import React from "react";
-import createReactClass from "create-react-class";
-import * as UU5 from "uu5g04";
-import "uu5g04-bricks";
+import { createComponent, PropTypes } from "uu5g05";
+import Uu5Elements from "uu5g05-elements";
 import Config from "../config/config.js";
-import Button from "../bricks/button.js";
-import PropTypes from "prop-types";
+import Button from "../components/button.js";
 import Tools from "../model/tools.js";
+import TileGrid from "../components/tile-grid";
 //@@viewOff:imports
 
-export const Service = createReactClass({
-  //@@viewOn:mixins
-  mixins: [
-    UU5.Common.BaseMixin,
-    UU5.Common.ElementaryMixin
-  ],
-  //@@viewOff:mixins
+//@@viewOn:constants
+//@@viewOff:constants
 
-  //@@viewOn:statics
-  statics: {
-    tagName: Config.TAG + "Service",
-    classNames: {
-      main: Config.CSS + "service"
+//@@viewOn:helpers
+function Buttons({ isQuantity, services, activeServices, onClick }) {
+  let buttons = [];
+
+  for (let key in services) {
+    let service = services[key];
+    if ((isQuantity && service.unit) || (!isQuantity && !service.unit)) {
+      let activeService = activeServices.find((service) => service.key === key);
+      let props = {
+        key,
+        children: service.name,
+        active: !!activeService,
+        onClick: () => onClick(key, isQuantity),
+      };
+
+      if (isQuantity && activeService) {
+        props.info = activeService.getQuantity();
+      }
+
+      buttons.push(<Button {...props} />);
     }
-  },
+  }
+
+  return buttons;
+}
+
+//@@viewOff:helpers
+
+const Service = createComponent({
+  //@@viewOn:statics
+  uu5Tag: Config.TAG + "Service",
   //@@viewOff:statics
 
   //@@viewOn:propTypes
@@ -31,79 +48,48 @@ export const Service = createReactClass({
     services: PropTypes.object,
     activeServices: PropTypes.array,
     onClick: PropTypes.func,
-    onBack: PropTypes.func
+    onBack: PropTypes.func,
   },
   //@@viewOff:propTypes
 
-  //@@viewOn:getDefaultProps
-  getDefaultProps() {
-    return {
-      services: {},
-      activeServices: []
-    }
-  },
-  //@@viewOff:getDefaultProps
+  //@@viewOn:defaultProps
+  defaultProps: {},
+  //@@viewOff:defaultProps
 
-  //@@viewOn:reactLifeCycle
-  //@@viewOff:reactLifeCycle
+  render(props) {
+    //@@viewOn:private
+    const { services, activeServices, onClick, onBack, onSubmit, ...blockProps } = props;
+    //@@viewOff:private
 
-  //@@viewOn:interface
-  //@@viewOff:interface
+    //@@viewOn:interface
+    //@@viewOff:interface
 
-  //@@viewOn:overriding
-  //@@viewOff:overriding
-
-  //@@viewOn:private
-  _getButtons(isQuantity) {
-    let buttons = [];
-
-    for (let key in this.props.services) {
-      let service = this.props.services[key];
-      if ((isQuantity && service.unit) || (!isQuantity && !service.unit)) {
-        let activeService = this.props.activeServices.find(service => service.key === key);
-        let props = {
-          key,
-          children: service.name,
-          active: !!activeService,
-          onClick: () => this.props.onClick(key, isQuantity)
-        };
-
-        if (isQuantity && activeService) {
-          props.info = activeService.getQuantity();
-        }
-
-        buttons.push(<Button {...props} />);
-      }
-    }
-
-    return buttons;
-  },
-  //@@viewOff:private
-
-  //@@viewOn:render
-  render() {
+    //@@viewOn:render
     return (
-      <UU5.Bricks.Section
-        {...this.getMainPropsToPass()}
-        className="uu5-common-padding-xs"
-        level={4}
-        header={[Tools.getBackButton(this.props.onBack), " Služba"]}
+      <Uu5Elements.Block
+        header={[Tools.getBackButton(onBack), " Služba"]}
+        headerType="title"
+        {...blockProps}
+        className={Config.Css.css({ padding: 16 })}
       >
-        {this._getButtons()}
-        <br />
-        {this._getButtons(true)}
-
-        {this.props.activeServices.length ? (
-          <div className={UU5.Common.Css.css`padding: 4px`}>
-            <UU5.Bricks.Button onClick={this.props.onSubmit} size="xl" displayBlock colorSchema="primary">
+        <TileGrid>
+          <Buttons services={services} activeServices={activeServices} onClick={onClick} />
+          <span key="empty" />
+          <Buttons services={services} activeServices={activeServices} onClick={onClick} isQuantity />
+        </TileGrid>
+        {activeServices.length ? (
+          <div className={Config.Css.css({ padding: 4 })}>
+            <Uu5Elements.Button onClick={onSubmit} size="xl" width="100%" colorScheme="primary">
               Souhrn
-            </UU5.Bricks.Button>
+            </Uu5Elements.Button>
           </div>
         ) : null}
-      </UU5.Bricks.Section>
+      </Uu5Elements.Block>
     );
-  }
-  //@@viewOff:render
+    //@@viewOff:render
+  },
 });
 
+//@@viewOn:exports
 export default Service;
+//@@viewOff:exports

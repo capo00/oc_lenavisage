@@ -1,11 +1,17 @@
-import UU5 from "uu5g04";
-import { App } from "./app.js";
-export * from "./app.js";
-export default { App };
+import { Utils } from "uu5g05";
+import "./config/config.js"; // startup (<style> element initialization)
+
+import * as Exports from "./exports.js";
+export * from "./exports.js";
+export default Exports;
 
 if (process.env.NODE_ENV !== "test") {
   console.log(
     `${process.env.NAME}-${process.env.VERSION} © Unicorn\nTerms of Use: https://unicorn.com/tou/${process.env.NAME}`
   );
 }
-UU5.Environment.addRuntimeLibrary({ name: process.env.NAME, version: process.env.VERSION });
+Utils.LibraryRegistry.registerLibrary({
+  name: process.env.NAME,
+  version: process.env.VERSION,
+  namespace: process.env.NAMESPACE,
+});

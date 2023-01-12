@@ -1,8 +1,11 @@
 import Schema from "./schema.js";
 
 export class Customer extends Schema {
-  static CODE = "CUSTOMER";
-  static NAME = "customer.json";
+  static CODE = "customer";
+
+  static getCode() {
+    return this.CODE;
+  }
 }
 
 export default Customer;

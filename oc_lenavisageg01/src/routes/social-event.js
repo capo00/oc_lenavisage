@@ -1,124 +1,111 @@
 //@@viewOn:imports
-import React from "react";
-import createReactClass from "create-react-class";
-import * as UU5 from "uu5g04";
-import "uu5g04-bricks";
-import Config from "../config/config.js";
-import { Confirmation } from "../services/services.js";
+import { createComponent, useState } from "uu5g05";
+import Uu5Elements from "uu5g05-elements";
+import { useSubAppData } from "uu_plus4u5g02";
+import Config, { SOCIAL_EVENT_NAME } from "../config/config.js";
+import Button from "../components/button.js";
 import Order from "../model/order.js";
+import Confirmation from "../services/confirmation.js";
 import Calls from "../calls.js";
-import { Button } from "../bricks/bricks.js";
-import { socialEvent } from "../model/order.js"
 import Tools from "../model/tools.js";
+import TileGrid from "../components/tile-grid.js";
+import Uu5Forms from "uu5g05-forms";
 //@@viewOff:imports
 
-export const SocialEvent = createReactClass({
-  //@@viewOn:mixins
-  mixins: [UU5.Common.BaseMixin],
-  //@@viewOff:mixins
+//@@viewOn:constants
+//@@viewOff:constants
 
+export const SocialEvent = createComponent({
   //@@viewOn:statics
-  statics: {
-    tagName: Config.TAG + "SocialEvent",
-    classNames: {
-      main: Config.CSS + "socialevent"
-    }
-  },
+  uu5Tag: Config.TAG + "SocialEvent",
   //@@viewOff:statics
 
   //@@viewOn:propTypes
+  propTypes: {},
   //@@viewOff:propTypes
 
-  //@@viewOn:getDefaultProps
-  //@@viewOff:getDefaultProps
+  //@@viewOn:defaultProps
+  defaultProps: {},
+  //@@viewOff:defaultProps
 
-  //@@viewOn:reactLifeCycle
-  getInitialState() {
-    let order = new Order();
-    window.OcOrder = order;
+  render(props) {
+    //@@viewOn:private
+    const { onRouteChange, ...blockProps } = props;
+    const [state, setState] = useState(null);
+    const { data: { document, ...config } = {} } = useSubAppData();
+    const socialEvent = config.socialEvent;
 
-    return {
-      order,
-      state: null,
-      activeEvents: []
-    };
-  },
-  //@@viewOff:reactLifeCycle
+    const [order, setOrder] = useState(() => new Order(undefined, config));
+    const [activeEvents, setActiveEvents] = useState([]);
+    //@@viewOff:private
 
-  //@@viewOn:interface
-  //@@viewOff:interface
+    //@@viewOn:interface
+    //@@viewOff:interface
 
-  //@@viewOn:overriding
-  //@@viewOff:overriding
-
-  //@@viewOn:private
-  _clear() {
-    this.setState(this.getInitialState());
-  },
-
-  _getContent() {
-    switch (this.state.state) {
+    //@@viewOn:render
+    let result;
+    switch (state) {
       case "confirmation":
-        return (
+        result = (
           <Confirmation
-            order={this.state.order}
-            onConfirm={data => {
-              Calls.saveOrder(data);
-              this._clear();
-              this.props.onRoute("home");
+            order={order}
+            onConfirm={(order) => {
+              Calls.saveOrder(document, order);
+              setOrder(new Order(undefined, config));
+              setState(null);
+              onRouteChange("home");
             }}
-            onRefuse={() => this.setState({ state: null })}
+            onRefuse={() => setState(null)}
           />
         );
+        break;
 
       default:
-        return (
-          <UU5.Bricks.Section
-            className="uu5-common-padding-xs"
-            level={4}
-            header={[Tools.getBackButton(() => this.props.onRoute("home")), socialEvent.name]}
+        result = (
+          <Uu5Elements.Block
+            header={[Tools.getBackButton(() => onRouteChange("home")), SOCIAL_EVENT_NAME]}
+            headerType="title"
+            {...blockProps}
+            className={Config.Css.css({ padding: 16 })}
           >
-            {Object.keys(socialEvent.type).map(key => {
-              return (
-                <Button
-                  key={key}
-                  children={socialEvent.type[key].name}
-                  active={this.state.activeEvents.indexOf(key) > -1}
-                  onClick={() => {
-                    this.state.order.toggleSocialEvent(key);
-                    this.setState({ activeEvents: this.state.order.getSocialEvents() });
-                  }}
-                />
-              )
-            })}
+            <TileGrid columnCount={2}>
+              {Object.keys(socialEvent).map((key) => {
+                return (
+                  <Button
+                    key={key}
+                    active={activeEvents.indexOf(key) > -1}
+                    onClick={() => {
+                      order.toggleSocialEvent(key);
+                      setActiveEvents([...order.getSocialEvents()]);
+                    }}
+                  >
+                    {socialEvent[key].name}
+                  </Button>
+                );
+              })}
+            </TileGrid>
 
-            {this.state.activeEvents.length ? (
-              <div className={UU5.Common.Css.css`padding: 4px`}>
-                <UU5.Bricks.Button
-                  onClick={() => this.setState({ state: "confirmation" })}
+            {activeEvents.length ? (
+              <div className={Config.Css.css({ padding: 4 })}>
+                <Uu5Elements.Button
                   size="xl"
-                  displayBlock
-                  colorSchema="primary"
+                  width="100%"
+                  colorScheme="primary"
+                  onClick={() => setState("confirmation")}
                 >
                   Souhrn
-                </UU5.Bricks.Button>
+                </Uu5Elements.Button>
               </div>
             ) : null}
-          </UU5.Bricks.Section>
+          </Uu5Elements.Block>
         );
     }
-  },
-  //@@viewOff:private
 
-  //@@viewOn:render
-  render() {
-    return (
-      <UU5.Bricks.Div {...this.getMainPropsToPass()}>
-        {this._getContent()}
-      </UU5.Bricks.Div>
-    );
-  }
-  //@@viewOff:render
+    return result;
+    //@@viewOff:render
+  },
 });
 
+//@@viewOn:exports
 export default SocialEvent;
+//@@viewOff:exports
