@@ -1,6 +1,6 @@
 {
   "name": "oc_lenavisageg01~root",
-  "version": "2.0.0-beta.1",
+  "version": "2.0.1-beta.1",
   "private": true,
   "workspaces": [
     "oc_lenavisageg01"

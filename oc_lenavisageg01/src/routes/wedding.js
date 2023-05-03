@@ -43,7 +43,7 @@ const MODAL_HEADER = {
 function getPayment(order) {
   return (
     <>
-      <div>{order.getCustomer().name}</div>
+      <div>{order.getCustomer()?.name}</div>
       <div><Uu5Elements.DateTime value={order.getWeddingDate()} /></div>
 
       {Confirmation.getServices(order, order.getSummary().sum)}
